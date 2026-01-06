@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">G-Nexus</string>
+    <string name="nav_profile">我的</string>
+    <string name="nav_forum">论坛</string>
+    <string name="nav_library">游戏库</string>
+    <string name="nav_store">商城</string>
+</resources>

@@ -17,6 +17,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.gnexus.app.navigation.GNAppScreen
 import com.gnexus.app.navigation.mainNavigationItems
+import com.gnexus.app.ui.screens.library.LibraryScreen
+import com.gnexus.app.ui.screens.library.LibraryViewModel
 
 @Composable
 fun GNexusAdaptiveApp(
@@ -65,7 +67,7 @@ fun GNexusAdaptiveApp(
 //                ForumScreen() // 之前实现的瀑布流页面
             }
             composable(GNAppScreen.Library.route) {
-//                MyGameLibraryScreen() // 之前实现的分栏页面
+                LibraryScreen(windowSizeClass = windowSizeClass)
             }
             composable(GNAppScreen.Store.route) {
                 // 具体的 StoreScreen()

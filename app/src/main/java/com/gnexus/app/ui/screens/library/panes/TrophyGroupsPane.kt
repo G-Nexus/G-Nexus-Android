@@ -15,13 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 
 //game: MetaGame, onGroupClick: (TrophyGroup) -> Unit
-@Preview(backgroundColor = 0xFF000000)
 @Composable
-fun TrophyGroupPane() {
+fun TrophyGroupsPane() {
     Column(
         Modifier
             .fillMaxSize()

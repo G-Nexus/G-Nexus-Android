@@ -56,6 +56,10 @@ dependencies {
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
 
+    // Image loading
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
+
     // --- COMPOSE - ADAPTIVE & WINDOW SIZE ---
     // The navigation suite provides adaptive layouts like NavigationSuiteScaffold.
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)

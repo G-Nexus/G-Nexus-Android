@@ -1,10 +1,10 @@
 package com.gnexus.app.ui.screens.library.panes
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -18,6 +18,7 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Restaurant
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Work
+import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material.icons.outlined.Coffee
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Restaurant
@@ -25,10 +26,13 @@ import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
@@ -46,8 +50,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -112,7 +114,8 @@ fun GameFeedPane() {
         ) {
             Row(
                 Modifier
-                    .fillMaxWidth(0.8f).clip(RoundedCornerShape(20.dp)),
+                    .fillMaxWidth(0.8f)
+                    .clip(RoundedCornerShape(20.dp)),
                 horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
             ) {
                 options.forEachIndexed { index, label ->
@@ -160,10 +163,73 @@ fun GameFeedPane() {
                                 .fillMaxSize()
                                 .padding(top = 20.dp)
                         ) {
-                            AsyncImage(
-                                model = "https://imgs.ali213.net/oday/uploadfile/2022/12/30/20221230122222799.jpg",
-                                contentDescription = null,
-                            )
+                            Column {
+                                Row {
+                                    AsyncImage(
+                                        model = "https://imgs.ali213.net/oday/uploadfile/2022/12/30/20221230122222799.jpg",
+                                        contentDescription = null,
+                                    )
+                                    Column(
+                                        modifier = Modifier
+                                            .padding(12.dp)
+                                            .fillMaxWidth()
+                                    ) {
+                                        Text(
+                                            item.title,
+                                            style = MaterialTheme.typography.titleMedium
+                                        )
+                                        Row(
+                                            modifier = Modifier.fillMaxSize(),
+                                            horizontalArrangement = Arrangement.SpaceBetween,
+                                        ) {
+                                            Column(
+                                                modifier = Modifier.fillMaxHeight(),
+                                                verticalArrangement = Arrangement.SpaceBetween
+                                            ) {
+                                                Text(
+                                                    "游戏进度",
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                                Row {
+                                                    Icon(
+                                                        Icons.Outlined.AccessTime,
+                                                        contentDescription = "test",
+                                                    )
+                                                    Text(
+                                                        "80%",
+                                                        style = MaterialTheme.typography.labelMedium
+                                                    )
+                                                }
+                                            }
+                                            Column(
+
+                                            ) {
+                                                Text(
+                                                    "游戏时长",
+                                                    style = MaterialTheme.typography.bodyMedium
+                                                )
+                                                Row {
+                                                    Icon(
+                                                        Icons.Outlined.AccessTime,
+                                                        contentDescription = "test",
+                                                    )
+                                                    Text(
+                                                        "100h",
+                                                        style = MaterialTheme.typography.labelMedium
+                                                    )
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                                Text("奖杯")
+                                HorizontalDivider(
+                                    Modifier,
+                                    DividerDefaults.Thickness,
+                                    DividerDefaults.color
+                                )
+                                Text("攻略")
+                            }
                         }
 
                     }

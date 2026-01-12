@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,7 +32,6 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -51,7 +49,7 @@ fun GameFeedPane() {
     TextFieldState("")
 
     val options = listOf("PlayStation", "Xbox", "Steam", "NintendoSwitch", "EpicGames")
-    val icons = listOf(
+    val icons: List<Int> = listOf(
         R.drawable.playstation,
         R.drawable.xbox,
         R.drawable.steam,
@@ -87,16 +85,16 @@ fun GameFeedPane() {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
+                .padding(innerPadding)
         ) {
             Row(
                 Modifier
-                    .clip(RoundedCornerShape(20.dp)),
-                horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.Absolute.Center,
             ) {
                 options.forEachIndexed { index, label ->
                     ToggleButton(
+                        modifier = Modifier.padding(start = 1.dp),
                         checked = checked[index],
                         onCheckedChange = { checked[index] = it },
                         shapes =
@@ -132,7 +130,7 @@ fun GameFeedPane() {
                 }
             ) {
                 LazyColumn(
-                    contentPadding = PaddingValues(12.dp),
+                    contentPadding = PaddingValues(bottom = 12.dp, start = 12.dp, end = 12.dp),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     items(mockData) { item ->

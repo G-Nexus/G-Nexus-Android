@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.absoluteOffset
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -18,6 +19,7 @@ import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -47,11 +49,11 @@ fun GameLibraryCard() {
                 AsyncImage(
                     model = "https://imgs.ali213.net/oday/uploadfile/2022/12/30/20221230122222799.jpg",
                     contentDescription = null,
-                    modifier = Modifier.height(140.dp)
+                    modifier = Modifier.height(120.dp)
                 )
                 Column(
                     modifier = Modifier
-                        .padding(12.dp)
+                        .padding(start = 12.dp, top = 12.dp, end = 12.dp)
                         .fillMaxSize()
                 ) {
                     Text(
@@ -112,18 +114,18 @@ fun GameLibraryCard() {
                             }
                         }
                     }
+                    LinearProgressIndicator(
+                        modifier = Modifier
+                            .absoluteOffset(y = 10.dp)
+                            .fillMaxWidth(),
+                        progress = { 0.8f },
+                    )
                 }
             }
-            HorizontalDivider(
-                Modifier.fillMaxSize(0.95f),
-                DividerDefaults.Thickness,
-                DividerDefaults.color
-            )
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(80.dp)
-                    .padding(12.dp),
+                    .padding(9.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -148,28 +150,28 @@ fun GameLibraryCard() {
                             Icons.Filled.EmojiEvents,
                             modifier = Modifier.padding(start = 6.dp),
                             contentDescription = "platinum_trophy",
-                            tint = Color(0xFFC2B280)
+                            tint = Color(0xFFE3DFDF)
                         )
                         Text("0")
                         Icon(
                             Icons.Filled.EmojiEvents,
                             modifier = Modifier.padding(start = 6.dp),
                             contentDescription = "gold_trophy",
-                            tint = Color(0xFFFFC2B2)
+                            tint = Color(0xFFFFD700)
                         )
                         Text("2")
                         Icon(
                             Icons.Filled.EmojiEvents,
                             modifier = Modifier.padding(start = 6.dp),
                             contentDescription = "silver_trophy",
-                            tint = Color(0xFFC2B280)
+                            tint = Color(0xFFC0C0C0)
                         )
                         Text("10")
                         Icon(
                             Icons.Filled.EmojiEvents,
                             modifier = Modifier.padding(start = 6.dp),
                             contentDescription = "bronze_trophy",
-                            tint = Color(0xFFC2B280)
+                            tint = Color(0xFFCD7F32)
                         )
                         Text("20")
                     }
@@ -189,8 +191,8 @@ fun GameLibraryCard() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(70.dp)
-                    .padding(12.dp),
+                    .height(60.dp)
+                    .padding(9.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {

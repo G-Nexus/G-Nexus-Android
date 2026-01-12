@@ -15,7 +15,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 
 //game: MetaGame, onGroupClick: (TrophyGroup) -> Unit
 @Composable
@@ -26,7 +28,13 @@ fun TrophyGroupsPane() {
             .verticalScroll(rememberScrollState())
     ) {
         Box(Modifier.height(200.dp)) {
-//            Image(R.drawable.ic_launcher_background, null, Modifier.fillMaxSize(), contentScale = ContentScale.Crop)
+            AsyncImage(
+                model = "https://eldenring.wiki.gg/images/e/ec/ELDENRING_01_4K.jpg",
+                contentDescription = null,
+                alignment = Alignment.BottomCenter,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
             Box(
                 Modifier
                     .fillMaxSize()
@@ -37,9 +45,9 @@ fun TrophyGroupsPane() {
                     .align(Alignment.BottomStart)
                     .padding(16.dp)
             ) {
-                Text("Game", style = MaterialTheme.typography.headlineSmall, color = Color.White)
+                Text("Elden Ring", style = MaterialTheme.typography.headlineSmall, color = Color.White)
                 Text(
-                    "Xbox Game Studio",
+                    "FromSoftware",
                     style = MaterialTheme.typography.bodySmall,
                     color = Color.White.copy(0.7f)
                 )

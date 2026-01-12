@@ -54,6 +54,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.gnexus.app.ui.screens.library.LibraryPreviewData.mockGame
+import com.gnexus.app.ui.screens.library.components.GameLibraryCard
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -155,83 +156,7 @@ fun GameFeedPane() {
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     items(mockData) { item ->
-                        ElevatedCard(
-                            elevation = CardDefaults.cardElevation(
-                                defaultElevation = 6.dp
-                            ),
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .padding(top = 20.dp)
-                        ) {
-                            Column {
-                                Row {
-                                    AsyncImage(
-                                        model = "https://imgs.ali213.net/oday/uploadfile/2022/12/30/20221230122222799.jpg",
-                                        contentDescription = null,
-                                    )
-                                    Column(
-                                        modifier = Modifier
-                                            .padding(12.dp)
-                                            .fillMaxWidth()
-                                    ) {
-                                        Text(
-                                            item.title,
-                                            style = MaterialTheme.typography.titleMedium
-                                        )
-                                        Row(
-                                            modifier = Modifier.fillMaxSize(),
-                                            horizontalArrangement = Arrangement.SpaceBetween,
-                                        ) {
-                                            Column(
-                                                modifier = Modifier.fillMaxHeight(),
-                                                verticalArrangement = Arrangement.SpaceBetween
-                                            ) {
-                                                Text(
-                                                    "游戏进度",
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
-                                                Row {
-                                                    Icon(
-                                                        Icons.Outlined.AccessTime,
-                                                        contentDescription = "test",
-                                                    )
-                                                    Text(
-                                                        "80%",
-                                                        style = MaterialTheme.typography.labelMedium
-                                                    )
-                                                }
-                                            }
-                                            Column(
-
-                                            ) {
-                                                Text(
-                                                    "游戏时长",
-                                                    style = MaterialTheme.typography.bodyMedium
-                                                )
-                                                Row {
-                                                    Icon(
-                                                        Icons.Outlined.AccessTime,
-                                                        contentDescription = "test",
-                                                    )
-                                                    Text(
-                                                        "100h",
-                                                        style = MaterialTheme.typography.labelMedium
-                                                    )
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                                Text("奖杯")
-                                HorizontalDivider(
-                                    Modifier,
-                                    DividerDefaults.Thickness,
-                                    DividerDefaults.color
-                                )
-                                Text("攻略")
-                            }
-                        }
-
+                        GameLibraryCard()
                     }
                 }
             }

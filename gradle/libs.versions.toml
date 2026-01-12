@@ -1,6 +1,7 @@
 [versions]
 agp = "8.13.2"
-kotlin = "2.0.21"
+floatingtabbar = "1.0.1"
+kotlin = "2.3.0"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
@@ -13,12 +14,13 @@ retrofit = "3.0.0"
 material3AdaptiveNavigationSuite = "1.4.0"
 material3WindowSizeClass = "1.4.0"
 adaptive = "1.3.0-alpha05"
-coilCompose = "3.2.0"
-coilNetworkOkhttpVersion = "3.2.0"
+coilCompose = "3.3.0"
+coilNetworkOkhttpVersion = "3.3.0"
 material3 = "1.5.0-alpha11"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+floatingtabbar = { module = "io.github.elyesmansour:floatingTabBar", version.ref = "floatingtabbar" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }

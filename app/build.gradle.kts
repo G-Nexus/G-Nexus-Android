@@ -33,9 +33,11 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
-    }
+   kotlin {
+       compilerOptions {
+           jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+       }
+   }
     buildFeatures {
         compose = true
     }
@@ -55,7 +57,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
-
+    implementation(libs.floatingtabbar)
     // Image loading
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)

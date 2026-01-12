@@ -1,37 +1,21 @@
 package com.gnexus.app.ui.screens.library.panes
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Coffee
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Restaurant
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Work
-import androidx.compose.material.icons.outlined.AccessTime
-import androidx.compose.material.icons.outlined.Coffee
-import androidx.compose.material.icons.outlined.Home
-import androidx.compose.material.icons.outlined.Restaurant
-import androidx.compose.material.icons.outlined.Search
-import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material3.ButtonGroupDefaults
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -50,9 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import com.gnexus.app.R
 import com.gnexus.app.ui.screens.library.LibraryPreviewData.mockGame
 import com.gnexus.app.ui.screens.library.components.GameLibraryCard
 import kotlinx.coroutines.delay
@@ -64,23 +50,14 @@ fun GameFeedPane() {
     val mockData = Array(20) { mockGame }
     TextFieldState("")
 
-    val options = listOf("Work", "Restaurant", "Coffee", "Search", "Home")
-    val unCheckedIcons =
-        listOf(
-            Icons.Outlined.Work,
-            Icons.Outlined.Restaurant,
-            Icons.Outlined.Coffee,
-            Icons.Outlined.Search,
-            Icons.Outlined.Home,
-        )
-    val checkedIcons =
-        listOf(
-            Icons.Filled.Work,
-            Icons.Filled.Restaurant,
-            Icons.Filled.Coffee,
-            Icons.Filled.Search,
-            Icons.Filled.Home,
-        )
+    val options = listOf("PlayStation", "Xbox", "Steam", "NintendoSwitch", "EpicGames")
+    val icons = listOf(
+        R.drawable.playstation,
+        R.drawable.xbox,
+        R.drawable.steam,
+        R.drawable.nintendo_switch,
+        R.drawable.epicgames
+    )
     val checked = remember { mutableStateListOf(true, true, true, true, true) }
 
     var isRefreshing by remember { mutableStateOf(false) }
@@ -111,11 +88,10 @@ fun GameFeedPane() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Row(
                 Modifier
-                    .fillMaxWidth(0.8f)
                     .clip(RoundedCornerShape(20.dp)),
                 horizontalArrangement = Arrangement.spacedBy(ButtonGroupDefaults.ConnectedSpaceBetween),
             ) {
@@ -130,9 +106,13 @@ fun GameFeedPane() {
                                 else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
                             },
                     ) {
-                        Icon(
-                            if (checked[index]) checkedIcons[index] else unCheckedIcons[index],
-                            contentDescription = "Localized description",
+                        Image(
+                            painter = painterResource(id = icons[index]),
+                            contentDescription = "Progress Icon",
+                            colorFilter = if (checked[index]) ColorFilter.tint(MaterialTheme.colorScheme.background) else ColorFilter.tint(
+                                MaterialTheme.colorScheme.onBackground
+                            ),
+                            modifier = Modifier.size(20.dp),
                         )
                     }
                 }

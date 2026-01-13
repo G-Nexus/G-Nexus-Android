@@ -1,7 +1,9 @@
 package com.gnexus.app.ui.screens.library.panes
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -11,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ButtonGroupDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -32,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -59,7 +63,6 @@ fun GameFeedPane() {
     val checked = remember { mutableStateListOf(true, true, true, true, true) }
 
     var isRefreshing by remember { mutableStateOf(false) }
-    var itemCount by remember { mutableStateOf(15) }
     val state = rememberPullToRefreshState()
     val coroutineScope = rememberCoroutineScope()
     val onRefresh: () -> Unit = {
@@ -67,7 +70,6 @@ fun GameFeedPane() {
         coroutineScope.launch {
             // fetch something
             delay(5000)
-            itemCount += 5
             isRefreshing = false
         }
     }
@@ -87,34 +89,7 @@ fun GameFeedPane() {
                 .fillMaxSize()
                 .padding(innerPadding)
         ) {
-            Row(
-                Modifier
-                    .fillMaxWidth(),
-                horizontalArrangement = Arrangement.Absolute.Center,
-            ) {
-                options.forEachIndexed { index, label ->
-                    ToggleButton(
-                        modifier = Modifier.padding(start = 1.dp),
-                        checked = checked[index],
-                        onCheckedChange = { checked[index] = it },
-                        shapes =
-                            when (index) {
-                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                            },
-                    ) {
-                        Image(
-                            painter = painterResource(id = icons[index]),
-                            contentDescription = "Progress Icon",
-                            colorFilter = if (checked[index]) ColorFilter.tint(MaterialTheme.colorScheme.background) else ColorFilter.tint(
-                                MaterialTheme.colorScheme.onBackground
-                            ),
-                            modifier = Modifier.size(20.dp),
-                        )
-                    }
-                }
-            }
+
             PullToRefreshBox(
                 isRefreshing = isRefreshing,
                 onRefresh = onRefresh,
@@ -125,16 +100,65 @@ fun GameFeedPane() {
                     PullToRefreshDefaults.LoadingIndicator(
                         state = state,
                         isRefreshing = isRefreshing,
-                        modifier = Modifier.align(Alignment.TopCenter),
+                        modifier = Modifier
+                            .align(Alignment.TopCenter)
+                            .padding(top = 40.dp),
                     )
                 }
             ) {
                 LazyColumn(
-                    contentPadding = PaddingValues(bottom = 12.dp, start = 12.dp, end = 12.dp),
+                    contentPadding = PaddingValues(
+                        bottom = 12.dp,
+                        start = 12.dp,
+                        end = 12.dp,
+                        top = 50.dp
+                    ),
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
                     items(mockData) { item ->
                         GameLibraryCard()
+                    }
+                }
+
+                Box(
+                    Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .matchParentSize()
+                            .blur(100.dp) // 只模糊背景
+                            .background(
+                                MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
+                                RoundedCornerShape(16.dp)
+                            )
+                    )
+                    Row(
+                        Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Absolute.Center,
+                    ) {
+                        options.forEachIndexed { index, label ->
+                            ToggleButton(
+                                modifier = Modifier.padding(start = 1.dp),
+                                checked = checked[index],
+                                onCheckedChange = { checked[index] = it },
+                                shapes =
+                                    when (index) {
+                                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                        options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                    },
+                            ) {
+                                Image(
+                                    painter = painterResource(id = icons[index]),
+                                    contentDescription = "Progress Icon",
+                                    colorFilter = if (checked[index]) ColorFilter.tint(MaterialTheme.colorScheme.background) else ColorFilter.tint(
+                                        MaterialTheme.colorScheme.onBackground
+                                    ),
+                                    modifier = Modifier.size(20.dp),
+                                )
+                            }
+                        }
                     }
                 }
             }

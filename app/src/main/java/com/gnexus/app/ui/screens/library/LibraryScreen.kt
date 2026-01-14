@@ -6,6 +6,7 @@ import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.SupportingPaneScaffold
 import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaffoldNavigator
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -22,6 +23,7 @@ fun LibraryScreen(
 ) {
     val navigator = rememberSupportingPaneScaffoldNavigator<MetaGame>()
     val scope = rememberCoroutineScope()
+    val isCompact = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
 
     BackHandler(navigator.canNavigateBack()) {
         scope.launch {
@@ -33,18 +35,18 @@ fun LibraryScreen(
         directive = navigator.scaffoldDirective,
         value = navigator.scaffoldValue,
         mainPane = {
-            AnimatedPane{
+            AnimatedPane {
                 GameFeedPane()
             }
 
         },
         supportingPane = {
-            AnimatedPane {
-//                when(val dest = navigator.currentDestination) {
-//
-//                }
-                TrophyGroupsPane()
-            }
+            if (!isCompact)
+                AnimatedPane {
+                    TrophyGroupsPane()
+                }
+            else null
+
         }
     )
 

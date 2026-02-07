@@ -1,7 +1,6 @@
 package com.gnexus.app.ui.screens.library.panes
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,6 +19,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.ToggleButton
 import androidx.compose.material3.TopAppBar
@@ -38,8 +38,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import androidx.compose.ui.zIndex
 import com.gnexus.app.R
 import com.gnexus.app.ui.screens.library.LibraryPreviewData.mockGame
 import com.gnexus.app.ui.screens.library.components.GameLibraryCard
@@ -79,84 +82,108 @@ fun GameFeedPane() {
         topBar = {
             TopAppBar(
                 title = {
-                    Text("游戏库", maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    Text(
+                        text = "游戏库",
+                        style = MaterialTheme.typography.headlineSmall.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            letterSpacing = 0.5.sp
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
                 },
             )
         }
     ) { innerPadding ->
-        Column(
+        Surface(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding)
+                .padding(innerPadding),
+            shape = RoundedCornerShape(24.dp),
+            color = MaterialTheme.colorScheme.surfaceContainerHigh
         ) {
 
-            PullToRefreshBox(
-                isRefreshing = isRefreshing,
-                onRefresh = onRefresh,
-                state = state,
-                contentAlignment = Alignment.TopStart,
-                modifier = Modifier.fillMaxSize(),
-                indicator = {
-                    PullToRefreshDefaults.LoadingIndicator(
-                        state = state,
-                        isRefreshing = isRefreshing,
-                        modifier = Modifier
-                            .align(Alignment.TopCenter)
-                            .padding(top = 40.dp),
-                    )
-                }
-            ) {
-                LazyColumn(
-                    contentPadding = PaddingValues(
-                        bottom = 12.dp,
-                        start = 12.dp,
-                        end = 12.dp,
-                        top = 50.dp
-                    ),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(mockData) { item ->
-                        GameLibraryCard()
-                    }
-                }
+            Column(
+                modifier = Modifier
 
-                Box(
-                    Modifier.fillMaxWidth()
+            ) {
+
+                PullToRefreshBox(
+                    isRefreshing = isRefreshing,
+                    onRefresh = onRefresh,
+                    state = state,
+                    contentAlignment = Alignment.TopStart,
+                    modifier = Modifier.fillMaxSize(),
+                    indicator = {
+                        PullToRefreshDefaults.LoadingIndicator(
+                            state = state,
+                            color = MaterialTheme.colorScheme.primary,
+                            isRefreshing = isRefreshing,
+                            modifier = Modifier
+                                .align(Alignment.TopCenter)
+                                .zIndex(1f)
+                                .padding(top = 60.dp)
+                        )
+                    }
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .matchParentSize()
-                            .blur(100.dp) // 只模糊背景
-                            .background(
-                                MaterialTheme.colorScheme.surface.copy(alpha = 0.8f),
-                                RoundedCornerShape(16.dp)
-                            )
-                    )
-                    Row(
-                        Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Absolute.Center,
+                    LazyColumn(
+                        contentPadding = PaddingValues(
+                            bottom = 12.dp,
+                            start = 12.dp,
+                            end = 12.dp,
+                            top = 40.dp
+                        ),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        options.forEachIndexed { index, label ->
-                            ToggleButton(
-                                modifier = Modifier.padding(start = 1.dp),
-                                checked = checked[index],
-                                onCheckedChange = { checked[index] = it },
-                                shapes =
-                                    when (index) {
-                                        0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                        options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                        else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                                    },
+                        items(mockData) { item ->
+                            GameLibraryCard()
+                        }
+                    }
+
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        shape = RoundedCornerShape(topStart = 28.dp),
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        tonalElevation = 2.dp
+                    ) {
+                        Box {
+                            Box(
+                                Modifier
+                                    .matchParentSize()
+                                    .blur(50.dp)
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .padding(6.dp)
+                                    .fillMaxWidth(),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.Absolute.Center,
                             ) {
-                                Image(
-                                    painter = painterResource(id = icons[index]),
-                                    contentDescription = "Progress Icon",
-                                    colorFilter = if (checked[index]) ColorFilter.tint(MaterialTheme.colorScheme.background) else ColorFilter.tint(
-                                        MaterialTheme.colorScheme.onBackground
-                                    ),
-                                    modifier = Modifier.size(20.dp),
-                                )
+                                options.forEachIndexed { index, label ->
+                                    ToggleButton(
+                                        modifier = Modifier.padding(start = 1.dp),
+                                        checked = checked[index],
+                                        onCheckedChange = { checked[index] = it },
+                                        shapes =
+                                            when (index) {
+                                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+                                                options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+                                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+                                            },
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = icons[index]),
+                                            contentDescription = null,
+                                            modifier = Modifier.size(20.dp),
+                                            colorFilter = if (checked[index]) ColorFilter.tint(
+                                                MaterialTheme.colorScheme.background
+                                            ) else ColorFilter.tint(
+                                                MaterialTheme.colorScheme.onBackground
+                                            ),
+                                        )
+                                    }
+                                }
                             }
                         }
                     }

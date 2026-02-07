@@ -1,33 +1,29 @@
 package com.gnexus.app.ui.screens.library.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.absoluteOffset
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
-import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.LightbulbCircle
 import androidx.compose.material.icons.outlined.AccessTime
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DividerDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Icon
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.gnexus.app.R
@@ -35,182 +31,89 @@ import com.gnexus.app.R
 @Composable
 fun GameLibraryCard() {
     ElevatedCard(
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 6.dp
-        ),
         modifier = Modifier
-            .fillMaxSize()
-            .padding(top = 20.dp)
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        )
     ) {
         Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+            modifier = Modifier.padding(16.dp)
         ) {
+            // ── 顶部：封面 + 基本信息 ─────────────────────
             Row {
                 AsyncImage(
                     model = "https://imgs.ali213.net/oday/uploadfile/2022/12/30/20221230122222799.jpg",
                     contentDescription = null,
-                    modifier = Modifier.height(120.dp)
+                    modifier = Modifier
+                        .size(width = 90.dp, height = 120.dp)
+                        .clip(RoundedCornerShape(16.dp))
                 )
+
                 Column(
                     modifier = Modifier
-                        .padding(start = 12.dp, top = 12.dp, end = 12.dp)
-                        .fillMaxSize()
+                        .padding(start = 12.dp)
+                        .weight(1f)
                 ) {
                     Text(
                         "Elden Ring",
-                        style = MaterialTheme.typography.titleMedium
+                        style = MaterialTheme.typography.titleMedium,
+                        maxLines = 2,
+                        overflow = TextOverflow.Ellipsis
                     )
+
+                    Spacer(Modifier.height(12.dp))
+
                     Row(
                         modifier = Modifier.fillMaxSize(),
-                        horizontalArrangement = Arrangement.SpaceAround,
+                        horizontalArrangement = Arrangement.SpaceAround
                     ) {
-                        Column(
-                            modifier = Modifier.height(70.dp),
-                            verticalArrangement = Arrangement.SpaceAround
-                        ) {
-                            Text(
-                                "游戏进度",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Image(
-                                    painter = painterResource(id = R.drawable.progress_activity),
-                                    contentDescription = "Progress Icon",
-                                    colorFilter = ColorFilter.tint(MaterialTheme.colorScheme.primary),
-                                    modifier = Modifier,
-                                )
-                                Text(
-                                    "80%",
-                                    modifier = Modifier.padding(start = 6.dp),
-                                    style = MaterialTheme.typography.labelMedium,
-                                )
-                            }
-                        }
-                        Column(
-                            modifier = Modifier.height(70.dp),
-                            verticalArrangement = Arrangement.SpaceAround
-                        ) {
-                            Text(
-                                "游戏时长",
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Row(
-                                horizontalArrangement = Arrangement.SpaceBetween,
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    Icons.Outlined.AccessTime,
-                                    contentDescription = "test",
-                                    tint = MaterialTheme.colorScheme.primary
-                                )
-                                Text(
-                                    "100h",
-                                    modifier = Modifier.padding(start = 6.dp),
-                                    style = MaterialTheme.typography.labelMedium
-                                )
-                            }
-                        }
+                        InfoBlock(
+                            title = "游戏进度",
+                            value = "80%",
+                            icon = R.drawable.progress_activity
+                        )
+                        InfoBlock(
+                            title = "游戏时长",
+                            value = "100h",
+                            iconVector = Icons.Outlined.AccessTime
+                        )
                     }
-                    LinearProgressIndicator(
-                        modifier = Modifier
-                            .absoluteOffset(y = 10.dp)
-                            .fillMaxWidth(),
-                        progress = { 0.8f },
-                    )
                 }
             }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(9.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    Icons.Filled.EmojiEvents,
-                    contentDescription = "trophy",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize(0.8f)
-                        .padding(start = 12.dp)
-                ) {
-                    Text(
-                        "奖杯",
-                        style = MaterialTheme.typography.bodyMedium
-                    )
-                    Row(
-                        Modifier.padding(top = 4.dp)
-                    ) {
-                        Icon(
-                            Icons.Filled.EmojiEvents,
-                            modifier = Modifier.padding(start = 6.dp),
-                            contentDescription = "platinum_trophy",
-                            tint = Color(0xFFE3DFDF)
-                        )
-                        Text("0")
-                        Icon(
-                            Icons.Filled.EmojiEvents,
-                            modifier = Modifier.padding(start = 6.dp),
-                            contentDescription = "gold_trophy",
-                            tint = Color(0xFFFFD700)
-                        )
-                        Text("2")
-                        Icon(
-                            Icons.Filled.EmojiEvents,
-                            modifier = Modifier.padding(start = 6.dp),
-                            contentDescription = "silver_trophy",
-                            tint = Color(0xFFC0C0C0)
-                        )
-                        Text("10")
-                        Icon(
-                            Icons.Filled.EmojiEvents,
-                            modifier = Modifier.padding(start = 6.dp),
-                            contentDescription = "bronze_trophy",
-                            tint = Color(0xFFCD7F32)
-                        )
-                        Text("20")
-                    }
-                }
 
-                Icon(
-                    Icons.AutoMirrored.Outlined.ArrowForwardIos,
-                    contentDescription = "trophy_forward",
-                    tint = MaterialTheme.colorScheme.outlineVariant
-                )
-            }
-            HorizontalDivider(
-                Modifier.fillMaxSize(0.95f),
-                DividerDefaults.Thickness,
-                DividerDefaults.color
-            )
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(60.dp)
-                    .padding(9.dp),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+            // ── 进度条（Expressive 承托） ─────────────────
+            Spacer(Modifier.height(12.dp))
+            Surface(
+                shape = RoundedCornerShape(12.dp),
+                color = MaterialTheme.colorScheme.surfaceContainerLow
             ) {
-                Icon(
-                    Icons.Filled.LightbulbCircle,
-                    contentDescription = "help",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    "游戏攻略",
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Icon(
-                    Icons.AutoMirrored.Outlined.ArrowForwardIos,
-                    contentDescription = "trophy_forward",
-                    tint = MaterialTheme.colorScheme.outlineVariant
+                LinearProgressIndicator(
+                    progress = { 0.8f },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(6.dp),
+                    color = MaterialTheme.colorScheme.primary,
+                    trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
                 )
             }
+
+            // ── 奖杯区 ──────────────────────────────────
+            Spacer(Modifier.height(16.dp))
+            TrophyRow()
+
+            HorizontalDivider(
+                modifier = Modifier.padding(vertical = 12.dp),
+                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+            )
+
+            // ── 攻略入口 ────────────────────────────────
+            ActionRow(
+                icon = Icons.Filled.LightbulbCircle,
+                text = "游戏攻略"
+            )
         }
     }
 }

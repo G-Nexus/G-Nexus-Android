@@ -18,6 +18,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.material3.pulltorefresh.PullToRefreshDefaults
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.windowsizeclass.WindowSizeClass
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -39,7 +41,12 @@ import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 @Composable
-fun GameFeedPane() {
+fun GameFeedPane(
+    windowSizeClass: WindowSizeClass,
+    onGameClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit,
+    onTrophyClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit,
+    onGuideClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit
+) {
     val mockData = Array(20) { mockGame }
     TextFieldState("")
 
@@ -54,7 +61,6 @@ fun GameFeedPane() {
             isRefreshing = false
         }
     }
-
 
     Scaffold(
         topBar = {
@@ -77,7 +83,18 @@ fun GameFeedPane() {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            shape = RoundedCornerShape(24.dp),
+            shape = if (windowSizeClass.widthSizeClass >= WindowWidthSizeClass.Medium) {
+                // 平板 / 大屏 / 折叠展开
+                RoundedCornerShape(24.dp)
+            } else {
+                // 直板手机
+                RoundedCornerShape(
+                    topStart = 24.dp,
+                    topEnd = 24.dp,
+                    bottomStart = 0.dp,
+                    bottomEnd = 0.dp
+                )
+            },
             color = MaterialTheme.colorScheme.surfaceContainerHigh
         ) {
 
@@ -114,7 +131,11 @@ fun GameFeedPane() {
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         items(mockData) { item ->
-                            GameLibraryCard()
+                            GameLibraryCard(
+                                onGameClick,
+                                onTrophyClick,
+                                onGuideClick
+                            )
                         }
                     }
                     PlatformGroupList()

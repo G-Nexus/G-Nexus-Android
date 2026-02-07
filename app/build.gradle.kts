@@ -64,15 +64,14 @@ dependencies {
     // --- COMPOSE - ADAPTIVE & WINDOW SIZE ---
     // The navigation suite provides adaptive layouts like NavigationSuiteScaffold.
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
-    implementation(libs.androidx.compose.material3.adaptive)
-    implementation(libs.androidx.compose.material3.adaptive.layout)
-    implementation(libs.androidx.compose.material3.adaptive.navigation)
     // For calculating window size classes (Compact, Medium, Expanded).
     implementation(libs.androidx.compose.material3.window.size)
 
     // --- COMPOSE - TOOLING & PREVIEW ---
     // These are needed for previews in Android Studio.
     implementation(libs.androidx.compose.ui.tooling.preview)
+    implementation(libs.androidx.compose.adaptive.layout)
+    implementation(libs.androidx.compose.adaptive.navigation)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
     // --- NETWORKING ---

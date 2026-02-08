@@ -75,20 +75,36 @@ dependencies {
     implementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.tooling)
 
-    // --- NETWORKING ---
-    implementation(libs.retrofit)
-    implementation(libs.retrofit.gson)
+    // --- DB(Room) ---
+    implementation(libs.androidx.room)
+    implementation(libs.androidx.room.compiler)
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.paging)
+    implementation(libs.androidx.room.guava)
+
+    // --- API ---
+    // Retrofit + OkHttp
+    implementation(libs.squareup.retrofit)
+    implementation(libs.squareup.retrofit.moshi)
+    implementation(libs.squareup.okhttp)
+    implementation(libs.squareup.okhttp.logging)
+    // Moshi
+    implementation(libs.squareup.moshi)
+    implementation(libs.squareup.moshi.kotlin)
+    implementation(libs.squareup.moshi.kotlin.codegen)
+    // Mockserver
+    implementation(libs.squareup.mock)
 
     // --- TESTING ---
     // Unit Testing
     testImplementation(libs.junit)
-
     // Instrumentation Testing
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
-
     // Use the Compose BOM for testing artifacts as well.
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
+    // DB(room) Test
+    implementation(libs.androidx.room.test)
 }

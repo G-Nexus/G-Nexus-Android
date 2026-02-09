@@ -18,26 +18,19 @@ import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 
 @Composable
 fun TrophyRow(
-    onTrophyClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit
+    onTrophyClick: (Int) -> Unit
 ) {
-    var bounds by remember { mutableStateOf<androidx.compose.ui.geometry.Rect?>(null) }
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
 
@@ -45,25 +38,13 @@ fun TrophyRow(
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(20.dp))
-            .onGloballyPositioned { coordinates ->
-                val position = coordinates.localToWindow(Offset.Zero)
-                val size = coordinates.size.toSize()
-                bounds = androidx.compose.ui.geometry.Rect(
-                    position.x,
-                    position.y,
-                    position.x + size.width,
-                    position.y + size.height
-                )
-            }
+
             .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(bounded = true),
-                onClick = {
-                    bounds?.let { rect ->
-                        onTrophyClick(1, rect) // ✅ 传递坐标
-                    }
-                }
-            )
+                interactionSource = interactionSource,
+                indication = null
+            ) {
+                onTrophyClick(1)
+            }
             .padding(8.dp)
             .background(
                 if (pressed)

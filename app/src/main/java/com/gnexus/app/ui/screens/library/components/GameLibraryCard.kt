@@ -26,44 +26,30 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.toSize
 import coil3.compose.AsyncImage
 import com.gnexus.app.R
 
 @Composable
 fun GameLibraryCard(
-    onGameClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit,
-    onTrophyClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit,
-    onGuideClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit
+    onGameClick: (Int) -> Unit,
+    onTrophyClick: (Int) -> Unit,
+    onGuideClick: (Int) -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val pressed by interactionSource.collectIsPressedAsState()
-    var bounds by remember { mutableStateOf<androidx.compose.ui.geometry.Rect?>(null) }
 
     Box(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp)
-            .onGloballyPositioned { coordinates ->
-                val position = coordinates.localToWindow(Offset.Zero)
-                val size = coordinates.size.toSize()
-                bounds = androidx.compose.ui.geometry.Rect(
-                    position.x,
-                    position.y,
-                    position.x + size.width,
-                    position.y + size.height
-                )
-            }
+
+
     ) {
 
         ElevatedCard(
@@ -75,11 +61,9 @@ fun GameLibraryCard(
                 }
                 .clickable(
                     interactionSource = interactionSource,
-                    indication = null // ⚠ 不要 ripple
+                    indication = null
                 ) {
-                    bounds?.let { rect ->
-                        onGameClick(1, rect) // 传递 bounds
-                    }
+                    onGameClick(1)
                 },
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.cardColors(

@@ -43,9 +43,9 @@ import kotlinx.coroutines.launch
 @Composable
 fun GameFeedPane(
     windowSizeClass: WindowSizeClass,
-    onGameClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit,
-    onTrophyClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit,
-    onGuideClick: (Int, androidx.compose.ui.geometry.Rect) -> Unit
+    onGameClick: (Int) -> Unit,
+    onTrophyClick: (Int) -> Unit,
+    onGuideClick: (Int) -> Unit
 ) {
     val mockData = Array(20) { mockGame }
     TextFieldState("")

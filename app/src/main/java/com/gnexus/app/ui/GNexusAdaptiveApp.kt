@@ -18,7 +18,6 @@ import androidx.navigation.compose.rememberNavController
 import com.gnexus.app.navigation.GNAppScreen
 import com.gnexus.app.navigation.mainNavigationItems
 import com.gnexus.app.ui.screens.library.LibraryScreen
-import com.gnexus.app.ui.screens.library.LibraryViewModel
 
 @Composable
 fun GNexusAdaptiveApp(

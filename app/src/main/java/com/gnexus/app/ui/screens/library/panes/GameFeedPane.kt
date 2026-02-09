@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,8 +48,9 @@ fun GameFeedPane(
     onTrophyClick: (Int) -> Unit,
     onGuideClick: (Int) -> Unit
 ) {
-    val mockData = Array(20) { mockGame }
+    val mockData = Array(10000) { mockGame }
     TextFieldState("")
+    val listState = rememberLazyListState()
 
     var isRefreshing by remember { mutableStateOf(false) }
     val state = rememberPullToRefreshState()
@@ -122,6 +124,7 @@ fun GameFeedPane(
                     }
                 ) {
                     LazyColumn(
+                        state = listState,
                         contentPadding = PaddingValues(
                             bottom = 12.dp,
                             start = 12.dp,

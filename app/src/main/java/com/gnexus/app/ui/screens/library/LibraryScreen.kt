@@ -1,10 +1,6 @@
 package com.gnexus.app.ui.screens.library
 
 import androidx.activity.compose.BackHandler
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
-import androidx.compose.animation.slideInHorizontally
-import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
 import androidx.compose.material3.adaptive.layout.PaneScaffoldDirective
@@ -14,6 +10,7 @@ import androidx.compose.material3.adaptive.navigation.rememberSupportingPaneScaf
 import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -48,13 +45,21 @@ fun LibraryScreen(
         scaffoldDirective = customDirective
     )
 
+    // 只有在真正有新内容时才更新，防止在导航回退过程中意外覆盖
+    // 在 LibraryScreen 内部增加一个辅助标志位
+    val isRestoring = rememberSaveable { mutableStateOf(true) }
     // 1. 强化状态锁：使用 DerivedStateOf 减少不必要的重组，避免“切回卡顿”
+
+    // 使用一个更稳定的方式来同步 navigator 和你的本地锁
     val currentDest = navigator.currentDestination?.contentKey
     var lastValidDest by rememberSaveable { mutableStateOf<LibraryDestination?>(null) }
 
-    // 只有在真正有新内容时才更新，防止在导航回退过程中意外覆盖
-    if (currentDest != null) {
-        lastValidDest = currentDest
+    // 核心逻辑：确保即使在 NavHost 切换时，内容也是锁死的
+    LaunchedEffect(currentDest) {
+        if (currentDest != null) {
+            lastValidDest = currentDest
+            isRestoring.value = false
+        }
     }
 
     BackHandler(enabled = navigator.canNavigateBack()) {
@@ -99,28 +104,24 @@ fun LibraryScreen(
             }
         },
         supportingPane = {
-            AnimatedPane(
-                // 优化动画参数：让退出稍微慢一点，给 MainPane 留出加载时间
-                enterTransition = slideInHorizontally(initialOffsetX = { it }) + fadeIn(),
-                exitTransition = slideOutHorizontally(targetOffsetX = { it }) + fadeOut()
-            ) {
-                // 2. 核心修复：锁定显示逻辑
-                // 在小屏模式下，为了防止返回时的瞬间黑屏，我们强制使用 lastValidDest
-                // 因为返回时 currentDest 会瞬间变 null，但动画还要跑 300ms
+            AnimatedPane {
+                // 核心改动：大屏直接用 current，小屏才用锁
                 val displayDest = if (isCompact) {
                     currentDest ?: lastValidDest
                 } else {
+                    // 大屏模式下，如果 navigator 还没恢复，显示 null（即空状态或占位）
+                    // 这样系统不需要在切回瞬间去计算一个“假”的历史内容，减少掉帧
                     currentDest
                 }
 
-                displayDest?.let { dest ->
-                    when (dest) {
-                        is LibraryDestination.Trophy -> TrophyGroupsPane(dest.game)
-                        is LibraryDestination.Guide -> TrophyGroupsPane(dest.game)
-                        is LibraryDestination.GameInfo -> TrophyGroupsPane(dest.game)
+                if (displayDest != null) {
+                    when (displayDest) {
+                        is LibraryDestination.Trophy -> TrophyGroupsPane(displayDest.game)
+                        is LibraryDestination.Guide -> TrophyGroupsPane(displayDest.game)
+                        is LibraryDestination.GameInfo -> TrophyGroupsPane(displayDest.game)
                     }
                 }
             }
-        },
+        }
     )
 }

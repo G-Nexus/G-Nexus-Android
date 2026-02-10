@@ -1,8 +1,5 @@
 package com.gnexus.app.data.model
 
-import java.time.Duration
-import java.time.Instant
-
 // Dedicated data class for trophy counts.
 data class TrophyCount(
     val platinum: Int = 0,
@@ -25,15 +22,15 @@ enum class Platform(val id: Int) {
 }
 
 data class GameDto(
-    val id: Int,
+    val id: Long,
     val name: String,
     val developerPublisher: String, // Could be split into two fields if needed
     val description: String,
     val coverUrl: String,
     val isOwned: Boolean,
-    val playTime: Duration,          // Use Duration for time measurement
-    val progress: Float,             // Ensure this is validated to be between 0.0 and 1.0
+    val playTime: Double,          // Use Duration for time measurement
+    val progress: Double,             // Ensure this is validated to be between 0.0 and 1.0
     val platform: Platform,          // Suggestion 2: Use the Platform enum
     val trophyCount: TrophyCount,    // Suggestion 1 & 4: Use the new class and a clearer name
-    val lastPlayedAt: Instant        // Suggestion 5: Use Instant for a point in time
+    val lastPlayedAt: Int        // Suggestion 5: Use Instant for a point in time
 )

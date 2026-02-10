@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface GameApiService {
     @GET("games")
     suspend fun getUserLibraryGames(
-        @Query("platform") platform: Array<Int>,
+        @Query("platform") platform: IntArray,
         @Query("page") page: Int = 1,
         @Query("page_size") pageSize: Int = 20,
     ): List<GameDto>

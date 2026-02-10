@@ -21,7 +21,9 @@ import coil3.compose.AsyncImage
 
 //game: MetaGame, onGroupClick: (TrophyGroup) -> Unit
 @Composable
-fun TrophyGroupsPane() {
+fun TrophyGroupsPane(
+    game: Int
+) {
     Column(
         Modifier
             .fillMaxSize()

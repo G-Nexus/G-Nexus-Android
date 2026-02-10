@@ -2,12 +2,16 @@ package com.gnexus.app.data.api
 
 import com.gnexus.app.data.model.GameDto
 import retrofit2.http.GET
-import retrofit2.http.Path
+import retrofit2.http.Query
 
 /**
-    网络接口定义 (Retrofit Interface)
- **/
+ * platform [1,2,3] 对应平台数组，当空数组作全平台查询
+ */
 interface GameApiService {
-    @GET("user/library")
-    suspend fun getLibraryGames(): List<GameDto>
+    @GET("games")
+    suspend fun getUserLibraryGames(
+        @Query("platform") platform: Array<Int>,
+        @Query("page") page: Int = 1,
+        @Query("page_size") pageSize: Int = 20,
+    ): List<GameDto>
 }

@@ -2,13 +2,13 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.ksp) // 启用 KSP
+    id("kotlin-parcelize")
 }
 
 android {
     namespace = "com.gnexus.app"
-    compileSdk {
-        version = release(36)
-    }
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.gnexus.app"
@@ -16,28 +16,26 @@ android {
         targetSdk = 36
         versionCode = 1
         versionName = "1.0"
-
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = false
+            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
+                "proguard-compose-rules.pro"
             )
         }
     }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_11
-        targetCompatibility = JavaVersion.VERSION_11
+
+    java {
+        toolchain {
+            languageVersion.set(JavaLanguageVersion.of(17))
+        }
     }
-   kotlin {
-       compilerOptions {
-           jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
-       }
-   }
+
     buildFeatures {
         compose = true
     }
@@ -50,61 +48,54 @@ dependencies {
     implementation(libs.androidx.activity.compose)
 
     // --- COMPOSE ---
-    // The BOM (Bill of Materials) manages versions for all Compose libraries.
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.compose.ui)
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
-    // Image loading
+
+    // --- COMPOSE - ADAPTIVE & WINDOW SIZE ---
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
+    implementation(libs.androidx.compose.material3.window.size)
+    implementation(libs.androidx.compose.adaptive.layout)
+    implementation(libs.androidx.compose.adaptive.navigation)
+    implementation(libs.androidx.adaptive.layout)
+
+    // --- IMAGE LOADING ---
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)
 
-    // --- COMPOSE - ADAPTIVE & WINDOW SIZE ---
-    // The navigation suite provides adaptive layouts like NavigationSuiteScaffold.
-    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
-    implementation(libs.androidx.compose.material3.adaptive)
-    implementation(libs.androidx.compose.material3.adaptive.layout)
-    implementation(libs.androidx.compose.material3.adaptive.navigation)
-    // For calculating window size classes (Compact, Medium, Expanded).
-    implementation(libs.androidx.compose.material3.window.size)
+    // --- NETWORK ---
+    implementation(libs.bundles.network)
 
-    // --- COMPOSE - TOOLING & PREVIEW ---
-    // These are needed for previews in Android Studio.
-    implementation(libs.androidx.compose.ui.tooling.preview)
-    debugImplementation(libs.androidx.compose.ui.tooling)
+    // --- JSON PARSING (MOSHI) ---
+    implementation(libs.bundles.moshi)
+    ksp(libs.squareup.moshi.kotlin.codegen)
 
-    // --- DB(Room) ---
-    implementation(libs.androidx.room)
-    implementation(libs.androidx.room.compiler)
-    implementation(libs.androidx.room.ktx)
-    implementation(libs.androidx.room.paging)
-    implementation(libs.androidx.room.guava)
+    // --- DATABASE (ROOM) ---
+    implementation(libs.bundles.room)
+    ksp(libs.androidx.room.compiler)
 
-    // --- API ---
-    // Retrofit + OkHttp
-    implementation(libs.squareup.retrofit)
-    implementation(libs.squareup.retrofit.moshi)
-    implementation(libs.squareup.okhttp)
-    implementation(libs.squareup.okhttp.logging)
-    // Moshi
-    implementation(libs.squareup.moshi)
-    implementation(libs.squareup.moshi.kotlin)
-    implementation(libs.squareup.moshi.kotlin.codegen)
-    // Mockserver
-    implementation(libs.squareup.mock)
+    // =======================================================================
+    //                                 TESTING
+    // =======================================================================
 
-    // --- TESTING ---
-    // Unit Testing
-    testImplementation(libs.junit)
-    // Instrumentation Testing
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    // Use the Compose BOM for testing artifacts as well.
+    // --- LOCAL UNIT TESTS (JVM) ---
+    testImplementation(libs.bundles.test.unit)
+    testImplementation(libs.squareup.mock)
+
+    // --- INSTRUMENTED TESTS (Android Device/Emulator) ---
     androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.compose.ui.test.junit4)
+    androidTestImplementation(libs.bundles.test.android)
+    androidTestImplementation(libs.androidx.room.test)
+
+    // =======================================================================
+    //                                 DEBUG
+    // ======================================================================
+
+    // --- COMPOSE TOOLING (PREVIEWS & INSPECTION) ---
+    debugImplementation(libs.androidx.compose.ui.tooling)
+    debugImplementation(libs.androidx.compose.ui.tooling.preview)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-    // DB(room) Test
-    implementation(libs.androidx.room.test)
 }

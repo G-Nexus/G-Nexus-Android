@@ -9,6 +9,6 @@ import androidx.room.RoomDatabase
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
-    abstract fun gameDao(): GameDao
-    abstract fun gameRemoteKeysDao(): GameRemoteKeysDao
+    abstract val gameDao: GameDao
+    abstract val gameRemoteKeysDao: GameRemoteKeysDao
 }

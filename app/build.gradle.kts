@@ -1,9 +1,9 @@
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    alias(libs.plugins.ksp) // 启用 KSP
-    id("kotlin-parcelize")
+    alias(libs.plugins.parcelize)
+    alias(libs.plugins.hilt.plugin)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -17,15 +17,16 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        vectorDrawables {
+            useSupportLibrary = true
+        }
     }
 
     buildTypes {
         release {
-            isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
-                "proguard-compose-rules.pro"
+                "proguard-rules.pro"
             )
         }
     }
@@ -73,9 +74,22 @@ dependencies {
     implementation(libs.bundles.moshi)
     ksp(libs.squareup.moshi.kotlin.codegen)
 
+    // --- lifecycle Viewmodel ---
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+
+    // --- Hilt - Dagger ---
+    implementation(libs.androidx.hilt.navigation.compose)
+    ksp(libs.androidx.hilt.compiler)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel)
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.android.compiler)
+
     // --- DATABASE (ROOM) ---
     implementation(libs.bundles.room)
     ksp(libs.androidx.room.compiler)
+
+    implementation(libs.androidx.paging.compose)
 
     // =======================================================================
     //                                 TESTING

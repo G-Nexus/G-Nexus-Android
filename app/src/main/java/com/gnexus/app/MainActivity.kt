@@ -8,7 +8,9 @@ import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSiz
 import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import com.gnexus.app.ui.GNexusAdaptiveApp
 import com.gnexus.app.ui.theme.GNexusTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,8 +18,8 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GNexusTheme {
-                val windowSize = calculateWindowSizeClass(this)
-                GNexusAdaptiveApp(windowSizeClass = windowSize)
+                val windowSizeClass = calculateWindowSizeClass(this)
+                GNexusAdaptiveApp(windowSizeClass)
             }
         }
     }

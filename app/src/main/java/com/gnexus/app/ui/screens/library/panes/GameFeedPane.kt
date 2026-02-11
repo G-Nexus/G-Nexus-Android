@@ -46,7 +46,7 @@ fun GameFeedPane(
     windowSizeClass: WindowSizeClass,
     onGameClick: (Int) -> Unit,
     onTrophyClick: (Int) -> Unit,
-    onGuideClick: (Int) -> Unit
+    onGuideClick: (Int) -> Unit,
 ) {
     val mockData = Array(10000) { mockGame }
     TextFieldState("")

@@ -1,5 +1,6 @@
 package com.gnexus.app.ui.screens.library
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.material3.adaptive.ExperimentalMaterial3AdaptiveApi
 import androidx.compose.material3.adaptive.layout.AnimatedPane
@@ -16,18 +17,22 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import com.gnexus.app.data.model.GameDto
 import com.gnexus.app.ui.screens.library.navigation.LibraryDestination
 import com.gnexus.app.ui.screens.library.panes.GameFeedPane
 import com.gnexus.app.ui.screens.library.panes.TrophyGroupsPane
+import dagger.hilt.android.HiltAndroidApp
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3AdaptiveApi::class)
 @Composable
 fun LibraryScreen(
     windowSizeClass: WindowSizeClass,
-    viewModel: LibraryViewModel = viewModel()
+
 ) {
     val isCompact = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
     val scope = rememberCoroutineScope()
@@ -99,7 +104,7 @@ fun LibraryScreen(
                                 LibraryDestination.Guide(game)
                             )
                         }
-                    }
+                    },
                 )
             }
         },

@@ -5,9 +5,13 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Upsert
 
 @Dao
 interface GameDao {
+    @Upsert
+    suspend fun upsertAll(games: List<GameEntity>)
+
     @Query("SELECT * FROM game ORDER BY lastPlayedAt DESC")
     fun pagingSource(): PagingSource<Int, GameEntity>
 

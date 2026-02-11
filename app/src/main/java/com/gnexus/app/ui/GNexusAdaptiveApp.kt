@@ -1,5 +1,6 @@
 package com.gnexus.app.ui
 
+import android.app.Application
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -18,6 +19,7 @@ import androidx.navigation.compose.rememberNavController
 import com.gnexus.app.navigation.GNAppScreen
 import com.gnexus.app.navigation.mainNavigationItems
 import com.gnexus.app.ui.screens.library.LibraryScreen
+import dagger.hilt.android.HiltAndroidApp
 
 @Composable
 fun GNexusAdaptiveApp(

@@ -15,13 +15,13 @@ interface GameDao {
     @Upsert
     suspend fun upsertAll(games: List<GameEntity>)
 
-    @Query("SELECT * FROM game ORDER BY lastPlayedAt DESC")
+    @Query("SELECT * FROM games ORDER BY lastPlayedAt DESC")
     fun pagingSource(): PagingSource<Int, GameEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertAll(games: List<GameEntity>)
 
-    @Query("DELETE FROM game")
+    @Query("DELETE FROM games")
     suspend fun clearAll()
 }
 

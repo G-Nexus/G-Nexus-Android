@@ -34,7 +34,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.gnexus.app.ui.screens.library.LibraryPreviewData.mockGame
+import com.gnexus.app.ui.screens.library.LibraryViewModel
 import com.gnexus.app.ui.screens.library.components.GameLibraryCard
 import com.gnexus.app.ui.screens.library.components.PlatformGroupList
 import kotlinx.coroutines.delay
@@ -47,7 +50,9 @@ fun GameFeedPane(
     onGameClick: (Int) -> Unit,
     onTrophyClick: (Int) -> Unit,
     onGuideClick: (Int) -> Unit,
+    viewModel: LibraryViewModel = hiltViewModel()
 ) {
+    val gamse = viewModel.games.collectAsLazyPagingItems()
     val mockData = Array(10000) { mockGame }
     TextFieldState("")
     val listState = rememberLazyListState()

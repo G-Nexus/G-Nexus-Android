@@ -13,9 +13,10 @@ import com.gnexus.app.data.db.GameEntity
 import com.gnexus.app.data.db.GameRemoteKeys
 import com.gnexus.app.data.mappers.toGameEntity
 import okio.IOException
+import javax.inject.Inject
 
 @OptIn(ExperimentalPagingApi::class)
-class GameRemoteMediator(
+class GameRemoteMediator @Inject constructor(
     private val api: GameApiService,
     private val db: AppDatabase
 ) : RemoteMediator<Int, GameEntity>() {

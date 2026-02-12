@@ -3,7 +3,7 @@ package com.gnexus.app.data.db
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "game")
+@Entity(tableName = "games")
 data class GameEntity(
     @PrimaryKey val id: Long,
     val name: String,

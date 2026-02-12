@@ -8,19 +8,19 @@ import com.gnexus.app.data.api.GameApiService
 import com.gnexus.app.data.db.AppDatabase
 import com.gnexus.app.data.db.GameEntity
 import com.gnexus.app.data.mediator.GameRemoteMediator
+import jakarta.inject.Inject
 import kotlinx.coroutines.flow.Flow
-//
-//@OptIn(ExperimentalPagingApi::class)
-//class GameRepository(
-//    private val gameApiService: GameApiService,
-//    private val db: AppDatabase,
-//    useFake: Boolean = true
-//) {
-//    fun games(): Flow<PagingData<GameEntity>> {
-//        return Pager(
-//            config = PagingConfig(pageSize = 20),
-//            remoteMediator = GameRemoteMediator( gameApiService, db),
-//            pagingSourceFactory = { db.gameDao().pagingSource() },
-//        ).flow
-//    }
-//}
+
+@OptIn(ExperimentalPagingApi::class)
+class GameRepository @Inject constructor(
+    private val mediator: GameRemoteMediator,
+    private val db: AppDatabase,
+) {
+    fun getGames(): Flow<PagingData<GameEntity>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            remoteMediator = mediator,
+            pagingSourceFactory = { db.gameDao.pagingSource() },
+        ).flow
+    }
+}

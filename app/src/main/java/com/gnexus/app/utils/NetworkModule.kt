@@ -13,26 +13,28 @@ import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
-@InstallIn(ViewModelComponent::class)
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    @Singleton
     @Provides
+    @Singleton
     @Named("baseUrl")
     fun getBaseUrl(): String = BASE_URL
 
-    @Singleton
     @Provides
-    fun getRetrofitClient(
+    @Singleton
+    fun provideRetrofit(
         @Named("baseUrl") baseUrl: String
     ): Retrofit = Retrofit.Builder()
         .baseUrl(baseUrl)
         .addConverterFactory(MoshiConverterFactory.create())
         .build()
 
-    @Singleton
     @Provides
-    fun getApiClient(
+    @Singleton
+    fun provideGameApiService(
         retrofit: Retrofit
-    ): GameApiService = retrofit.create(GameApiService::class.java)
+    ): GameApiService {
+        return retrofit.create(GameApiService::class.java)
+    }
 }

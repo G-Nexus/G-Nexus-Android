@@ -6,9 +6,12 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
+import dagger.Provides
+
 
 @Dao
 interface GameDao {
+
     @Upsert
     suspend fun upsertAll(games: List<GameEntity>)
 

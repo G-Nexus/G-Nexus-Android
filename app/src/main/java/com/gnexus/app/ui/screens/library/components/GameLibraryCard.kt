@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LightbulbCircle
@@ -34,9 +35,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.gnexus.app.R
+import com.gnexus.app.data.db.GameEntity
 
 @Composable
 fun GameLibraryCard(
+    game: GameEntity?,
     onGameClick: (Int) -> Unit,
     onTrophyClick: (Int) -> Unit,
     onGuideClick: (Int) -> Unit
@@ -76,10 +79,10 @@ fun GameLibraryCard(
                 // ── 顶部：封面 + 基本信息 ─────────────────────
                 Row {
                     AsyncImage(
-                        model = "https://imgs.ali213.net/oday/uploadfile/2022/12/30/20221230122222799.jpg",
+                        model = game?.imageUrl,
                         contentDescription = null,
                         modifier = Modifier
-                            .size(width = 90.dp, height = 120.dp)
+                            .width(130.dp)
                             .clip(RoundedCornerShape(16.dp))
                     )
 
@@ -89,7 +92,7 @@ fun GameLibraryCard(
                             .weight(1f)
                     ) {
                         Text(
-                            "Elden Ring",
+                            text = game?.name ?: game?.sortableName ?: game?.localizedName?: 0.toString(),
                             style = MaterialTheme.typography.titleMedium,
                             maxLines = 2,
                             overflow = TextOverflow.Ellipsis
@@ -108,7 +111,7 @@ fun GameLibraryCard(
                             )
                             InfoBlock(
                                 title = "游戏时长",
-                                value = "100h",
+                                value = game?.playDuration ?: 0.toString(),
                                 iconVector = Icons.Outlined.AccessTime
                             )
                         }
@@ -116,7 +119,7 @@ fun GameLibraryCard(
                 }
 
                 // ── 进度条（Expressive 承托） ─────────────────
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(15.dp))
                 Surface(
                     shape = RoundedCornerShape(12.dp),
                     color = MaterialTheme.colorScheme.surfaceContainerLow
@@ -132,7 +135,7 @@ fun GameLibraryCard(
                 }
 
                 // ── 奖杯区 ──────────────────────────────────
-                Spacer(Modifier.height(8.dp))
+                Spacer(Modifier.height(9.dp))
                 TrophyRow(onTrophyClick)
 
                 HorizontalDivider(

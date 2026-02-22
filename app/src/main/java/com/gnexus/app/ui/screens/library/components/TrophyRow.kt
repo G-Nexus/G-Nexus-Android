@@ -29,59 +29,57 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun TrophyRow(
-    onTrophyClick: (Int) -> Unit
+	onTrophyClick: (Int) -> Unit
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val pressed by interactionSource.collectIsPressedAsState()
+	val interactionSource = remember { MutableInteractionSource() }
+	val pressed by interactionSource.collectIsPressedAsState()
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(20.dp))
-
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null
-            ) {
-                onTrophyClick(1)
-            }
-            .padding(8.dp)
-            .background(
-                if (pressed)
-                    MaterialTheme.colorScheme.surfaceContainerHigh
-                else
-                    Color.Transparent
-            ),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            Icons.Filled.EmojiEvents,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(Modifier.width(20.dp))
-
-        Column {
-            Text(
-                "奖杯",
-                style = MaterialTheme.typography.bodyMedium
-            )
-            Row(
-                modifier = Modifier
-                    .padding(top = 6.dp),
-                horizontalArrangement = Arrangement.spacedBy(40.dp)
-            ) {
-                TrophyIcon(TrophyType.Platinum, 0, highlight = true)
-                TrophyIcon(TrophyType.Gold, 2, highlight = true)
-                TrophyIcon(TrophyType.Silver, 10)
-                TrophyIcon(TrophyType.Bronze, 20)
-            }
-        }
-        Spacer(Modifier.weight(1f))
-        Icon(
-            Icons.AutoMirrored.Outlined.ArrowForwardIos,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.outlineVariant
-        )
-    }
+	Row(
+		modifier = Modifier
+			.fillMaxWidth()
+			.clip(RoundedCornerShape(20.dp))
+			.background(
+				if (pressed)
+					MaterialTheme.colorScheme.surfaceContainerHigh
+				else
+					Color.Transparent
+			)
+			.padding(horizontal = 12.dp, vertical = 10.dp)
+			.clickable(
+				interactionSource = interactionSource,
+				indication = null
+			) {
+				onTrophyClick(1)
+			},
+		verticalAlignment = Alignment.CenterVertically,
+	) {
+		Icon(
+			Icons.Filled.EmojiEvents,
+			contentDescription = null,
+			tint = MaterialTheme.colorScheme.primary
+		)
+		Spacer(Modifier.width(20.dp))
+		Column {
+			Text(
+				"奖杯",
+				style = MaterialTheme.typography.bodyMedium
+			)
+			Row(
+				modifier = Modifier
+					.padding(top = 6.dp),
+				horizontalArrangement = Arrangement.spacedBy(40.dp)
+			) {
+				TrophyIcon(TrophyType.Platinum, 0, highlight = true)
+				TrophyIcon(TrophyType.Gold, 2, highlight = true)
+				TrophyIcon(TrophyType.Silver, 10)
+				TrophyIcon(TrophyType.Bronze, 20)
+			}
+		}
+		Spacer(Modifier.weight(1f))
+		Icon(
+			Icons.AutoMirrored.Outlined.ArrowForwardIos,
+			contentDescription = null,
+			tint = MaterialTheme.colorScheme.outlineVariant
+		)
+	}
 }

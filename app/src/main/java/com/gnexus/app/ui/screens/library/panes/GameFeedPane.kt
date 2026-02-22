@@ -36,7 +36,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
-import com.gnexus.app.ui.screens.library.LibraryPreviewData.mockGame
 import com.gnexus.app.ui.screens.library.LibraryViewModel
 import com.gnexus.app.ui.screens.library.components.GameLibraryCard
 import com.gnexus.app.ui.screens.library.components.PlatformGroupList
@@ -52,8 +51,7 @@ fun GameFeedPane(
     onGuideClick: (Int) -> Unit,
     viewModel: LibraryViewModel = hiltViewModel()
 ) {
-    val gamse = viewModel.games.collectAsLazyPagingItems()
-    val mockData = Array(10000) { mockGame }
+    val games = viewModel.games.collectAsLazyPagingItems()
     TextFieldState("")
     val listState = rememberLazyListState()
 
@@ -138,8 +136,9 @@ fun GameFeedPane(
                         ),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
-                        items(mockData) { item ->
+                        items(games.itemSnapshotList) { item ->
                             GameLibraryCard(
+                                item,
                                 onGameClick,
                                 onTrophyClick,
                                 onGuideClick

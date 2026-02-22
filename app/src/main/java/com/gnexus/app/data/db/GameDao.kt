@@ -15,7 +15,7 @@ interface GameDao {
     @Upsert
     suspend fun upsertAll(games: List<GameEntity>)
 
-    @Query("SELECT * FROM games ORDER BY lastPlayedAt DESC")
+    @Query("SELECT * FROM games ORDER BY lastPlayedDateTime DESC")
     fun pagingSource(): PagingSource<Int, GameEntity>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

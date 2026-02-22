@@ -1,36 +1,101 @@
 package com.gnexus.app.data.model
 
-// Dedicated data class for trophy counts.
-//data class TrophyCount(
-//    val platinum: Int = 0,
-//    val gold: Int = 0,
-//    val silver: Int = 0,
-//    val bronze: Int = 0
+import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
+
+@JsonClass(generateAdapter = true)
+data class GamesResDto(
+    val nextOffset: Int? = null,
+    val previousOffset: Int,
+    @field:Json(name = "titles")
+    val titles: List<GameDto>,
+    val totalItemCount: Int
+)
+
+@JsonClass(generateAdapter = true)
+data class GameDto(
+    val category: String,
+    @field:Json(name = "concept")
+    val concept: Concept,
+    val firstPlayedDateTime: String,
+    val imageUrl: String,
+    val lastPlayedDateTime: String,
+    val localizedImageUrl: String,
+    val localizedName: String,
+    @field:Json(name = "media")
+    val media: Media,
+    val name: String,
+    val playCount: Int,
+    val playDuration: String,
+    val service: String,
+    val sortableName: String,
+    val titleId: String
+)
+
+@JsonClass(generateAdapter = true)
+data class Concept(
+    val country: String,
+    @field:Json(name = "genres")
+    val genres: List<String>,
+    val id: Int,
+    val language: String,
+    @field:Json(name = "localizedName")
+    val localizedName: LocalizedName,
+    @field:Json(name = "media")
+    val media: Media,
+    val name: String,
+    @field:Json(name = "titleIds")
+    val titleIds: List<String>
+)
+
+@JsonClass(generateAdapter = true)
+data class LocalizedName(
+    val defaultLanguage: String,
+    @field:Json(name = "metadata")
+    val metadata: Any
+)
+
+//@JsonClass(generateAdapter = true)
+//data class Metadata(
+//    val arAE: String,
+//    val daDK: String,
+//    val deDE: String,
+//    val enGB: String,
+//    val enUS: String,
+//    val es419: String,
+//    val esES: String,
+//    val fiFI: String,
+//    val frCA: String,
+//    val frFR: String,
+//    val itIT: String,
+//    val jaJP: String,
+//    val koKR: String,
+//    val nlNL: String,
+//    val noNO: String,
+//    val plPL: String,
+//    val ptBR: String,
+//    val ptPT: String,
+//    val ruRU: String,
+//    val svSE: String,
+//    val trTR: String,
+//    val ukUA: String,
+//    val zhHans: String,
+//    val zhHant: String
 //)
 
-// Use an enum for platforms to ensure type safety.
-//enum class Platform(val id: Int) {
-//    PLAYSTATION(1),
-//    XBOX(2),
-//    PC(3),
-//    NINTENDO_SWITCH(4);
-//    // Add other platforms as needed
-//
-//    companion object {
-//        fun fromId(id: Int): Platform? = entries.find { it.id == id }
-//    }
-//}
+@JsonClass(generateAdapter = true)
+data class Image(
+    val format: String,
+    val type: String,
+    val url: String
+)
 
-data class GameDto(
-    val id: Long,
-    val name: String,
-    val developerPublisher: String, // Could be split into two fields if needed
-    val description: String,
-    val coverUrl: String,
-    val isOwned: Boolean,
-    val playTime: Int,          // Use Duration for time measurement
-    val progress: Double,             // Ensure this is validated to be between 0.0 and 1.0
-    val platform: Int,          // Suggestion 2: Use the Platform enum
-    val trophyCount: String,    // Suggestion 1 & 4: Use the new class and a clearer name
-    val lastPlayedAt: Int        // Suggestion 5: Use Instant for a point in time
+@JsonClass(generateAdapter = true)
+data class Media(
+    @field:Json(name = "audios")
+    val audios: List<Any>,
+    @field:Json(name = "images")
+    val images: List<Image>,
+    @field:Json(name = "videos")
+    val videos: List<Any>
 )

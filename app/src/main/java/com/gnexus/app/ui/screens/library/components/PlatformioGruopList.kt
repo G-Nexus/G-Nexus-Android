@@ -28,62 +28,62 @@ import com.gnexus.app.R
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
 fun PlatformGroupList() {
-    val options = listOf("PlayStation", "Xbox", "Steam", "NintendoSwitch", "EpicGames")
-    val icons: List<Int> = listOf(
-        R.drawable.playstation,
-        R.drawable.xbox,
-        R.drawable.steam,
-        R.drawable.nintendo_switch,
-        R.drawable.epicgames
-    )
-    val checked = remember { mutableStateListOf(true, true, true, true, true) }
+	val options = listOf("PlayStation", "Xbox", "Steam", "NintendoSwitch", "EpicGames")
+	val icons: List<Int> = listOf(
+		R.drawable.playstation,
+		R.drawable.xbox,
+		R.drawable.steam,
+		R.drawable.nintendo_switch,
+		R.drawable.epicgames
+	)
+	val checked = remember { mutableStateListOf(true, false, false, false, false) }
 
 
-    Surface(
-        modifier = Modifier
-            .fillMaxWidth(),
-        shape = RoundedCornerShape(topStart = 24.dp),
-        color = MaterialTheme.colorScheme.surfaceContainerHighest,
-        tonalElevation = 2.dp
-    ) {
-        Box {
-            Box(
-                Modifier
-                    .matchParentSize()
-                    .blur(50.dp)
-            )
-            Row(
-                modifier = Modifier
-                    .padding(6.dp)
-                    .fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Absolute.Center,
-            ) {
-                options.forEachIndexed { index, label ->
-                    ToggleButton(
-                        modifier = Modifier.padding(start = 1.dp),
-                        checked = checked[index],
-                        onCheckedChange = { checked[index] = it },
-                        shapes =
-                            when (index) {
-                                0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
-                                options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
-                                else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
-                            },
-                    ) {
-                        Image(
-                            painter = painterResource(id = icons[index]),
-                            contentDescription = null,
-                            modifier = Modifier.size(20.dp),
-                            colorFilter = if (checked[index]) ColorFilter.tint(
-                                MaterialTheme.colorScheme.background
-                            ) else ColorFilter.tint(
-                                MaterialTheme.colorScheme.onBackground
-                            ),
-                        )
-                    }
-                }
-            }
-        }
-    }
+	Surface(
+		modifier = Modifier
+			.fillMaxWidth(),
+		shape = RoundedCornerShape(topStart = 24.dp),
+		color = MaterialTheme.colorScheme.surfaceContainerHighest,
+		tonalElevation = 2.dp
+	) {
+		Box {
+			Box(
+				Modifier
+					.matchParentSize()
+					.blur(50.dp)
+			)
+			Row(
+				modifier = Modifier
+					.padding(6.dp)
+					.fillMaxWidth(),
+				verticalAlignment = Alignment.CenterVertically,
+				horizontalArrangement = Arrangement.Absolute.Center,
+			) {
+				options.forEachIndexed { index, label ->
+					ToggleButton(
+						modifier = Modifier.padding(start = 1.dp),
+						checked = checked[index],
+						onCheckedChange = { checked[index] = it },
+						shapes =
+							when (index) {
+								0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
+								options.lastIndex -> ButtonGroupDefaults.connectedTrailingButtonShapes()
+								else -> ButtonGroupDefaults.connectedMiddleButtonShapes()
+							},
+					) {
+						Image(
+							painter = painterResource(id = icons[index]),
+							contentDescription = null,
+							modifier = Modifier.size(20.dp),
+							colorFilter = if (checked[index]) ColorFilter.tint(
+								MaterialTheme.colorScheme.background
+							) else ColorFilter.tint(
+								MaterialTheme.colorScheme.onBackground
+							),
+						)
+					}
+				}
+			}
+		}
+	}
 }

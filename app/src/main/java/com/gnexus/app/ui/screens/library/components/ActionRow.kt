@@ -27,48 +27,47 @@ import androidx.compose.ui.unit.dp
 
 @Composable
 fun ActionRow(
-    onGuideClick: (Int) -> Unit,
-    icon: ImageVector,
-    text: String
+	onGuideClick: (Int) -> Unit,
+	icon: ImageVector,
+	text: String
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
-    val pressed by interactionSource.collectIsPressedAsState()
+	val interactionSource = remember { MutableInteractionSource() }
+	val pressed by interactionSource.collectIsPressedAsState()
 
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(16.dp))
-
-            .background(
-                if (pressed)
-                    MaterialTheme.colorScheme.surfaceContainerHigh
-                else
-                    Color.Transparent
-            )
-            .padding(horizontal = 12.dp, vertical = 10.dp)
-            .clickable(
-                interactionSource = interactionSource,
-                indication = null
-            ) {
-                onGuideClick(1)
-            },
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            icon,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.primary
-        )
-        Spacer(Modifier.width(20.dp))
-        Text(
-            text,
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Spacer(Modifier.weight(1f))
-        Icon(
-            Icons.AutoMirrored.Outlined.ArrowForwardIos,
-            contentDescription = null,
-            tint = MaterialTheme.colorScheme.outlineVariant
-        )
-    }
+	Row(
+		modifier = Modifier
+			.fillMaxWidth()
+			.clip(RoundedCornerShape(16.dp))
+			.background(
+				if (pressed)
+					MaterialTheme.colorScheme.surfaceContainerHigh
+				else
+					Color.Transparent
+			)
+			.padding(horizontal = 12.dp, vertical = 10.dp)
+			.clickable(
+				interactionSource = interactionSource,
+				indication = null
+			) {
+				onGuideClick(1)
+			},
+		verticalAlignment = Alignment.CenterVertically
+	) {
+		Icon(
+			icon,
+			contentDescription = null,
+			tint = MaterialTheme.colorScheme.primary
+		)
+		Spacer(Modifier.width(20.dp))
+		Text(
+			text,
+			style = MaterialTheme.typography.bodyMedium
+		)
+		Spacer(Modifier.weight(1f))
+		Icon(
+			Icons.AutoMirrored.Outlined.ArrowForwardIos,
+			contentDescription = null,
+			tint = MaterialTheme.colorScheme.outlineVariant
+		)
+	}
 }

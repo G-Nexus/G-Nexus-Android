@@ -32,13 +32,13 @@ class GameRemoteMediator @Inject constructor(
                 if (lastItem == null) {
                     1
                 } else {
-                    ((lastItem.id / state.config.pageSize) + 1).toInt()
+                   1
                 }
             }
         }
         return try {
-            val games = api.getUserLibraryGames(page, state.config.pageSize)
-            Log.d("TEST", games.toString())
+            val res = api.getUserLibraryGames(page, state.config.pageSize)
+            val games = res.body()!!.titles
 
             db.withTransaction {
                 if (loadType == LoadType.REFRESH) {
@@ -47,7 +47,7 @@ class GameRemoteMediator @Inject constructor(
                 }
                 val keys = games.map {
                     GameRemoteKeys(
-                        gameId = it.id,
+                        gameId = it.titleId,
                         prevKey = if (page == 1) null else page - 1,
                         nextKey = if (games.isEmpty()) null else page + 1
                     )

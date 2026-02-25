@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,6 +38,7 @@ fun TrophyRow(
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
+			.height(59.dp)
 			.clip(RoundedCornerShape(20.dp))
 			.background(
 				if (pressed)
@@ -66,8 +68,8 @@ fun TrophyRow(
 			)
 			Row(
 				modifier = Modifier
-					.padding(top = 6.dp),
-				horizontalArrangement = Arrangement.spacedBy(40.dp)
+					.padding(top = 6.dp, start = 10.dp, end = 10.dp),
+				horizontalArrangement = Arrangement.spacedBy(20.dp)
 			) {
 				TrophyIcon(TrophyType.Platinum, 0, highlight = true)
 				TrophyIcon(TrophyType.Gold, 2, highlight = true)

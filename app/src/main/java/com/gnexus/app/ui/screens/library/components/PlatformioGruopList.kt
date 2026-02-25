@@ -15,8 +15,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.ToggleButton
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -27,8 +29,9 @@ import com.gnexus.app.R
 
 @Composable
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class)
-fun PlatformGroupList() {
-	val options = listOf("PlayStation", "Xbox", "Steam", "NintendoSwitch", "EpicGames")
+fun PlatformGroupList(
+) {
+	val options = listOf("PlayStation", "Xbox", "Steam")
 	val icons: List<Int> = listOf(
 		R.drawable.playstation,
 		R.drawable.xbox,
@@ -36,8 +39,7 @@ fun PlatformGroupList() {
 		R.drawable.nintendo_switch,
 		R.drawable.epicgames
 	)
-	val checked = remember { mutableStateListOf(true, false, false, false, false) }
-
+	var checked by remember { mutableIntStateOf(0) }
 
 	Surface(
 		modifier = Modifier
@@ -62,8 +64,8 @@ fun PlatformGroupList() {
 				options.forEachIndexed { index, label ->
 					ToggleButton(
 						modifier = Modifier.padding(start = 1.dp),
-						checked = checked[index],
-						onCheckedChange = { checked[index] = it },
+						checked = checked == index,
+						onCheckedChange = { checked = index },
 						shapes =
 							when (index) {
 								0 -> ButtonGroupDefaults.connectedLeadingButtonShapes()
@@ -75,7 +77,7 @@ fun PlatformGroupList() {
 							painter = painterResource(id = icons[index]),
 							contentDescription = null,
 							modifier = Modifier.size(20.dp),
-							colorFilter = if (checked[index]) ColorFilter.tint(
+							colorFilter = if (checked == index) ColorFilter.tint(
 								MaterialTheme.colorScheme.background
 							) else ColorFilter.tint(
 								MaterialTheme.colorScheme.onBackground

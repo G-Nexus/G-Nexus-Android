@@ -51,8 +51,6 @@ fun GameLibraryCard(
         modifier = Modifier
             .fillMaxWidth()
             .padding(top = 16.dp)
-
-
     ) {
 
         ElevatedCard(
@@ -82,7 +80,7 @@ fun GameLibraryCard(
                         model = game?.imageUrl,
                         contentDescription = null,
                         modifier = Modifier
-                            .width(130.dp)
+                            .width(120.dp)
                             .clip(RoundedCornerShape(16.dp))
                     )
 

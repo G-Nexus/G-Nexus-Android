@@ -27,7 +27,6 @@ enum class SortOrder {
 @HiltViewModel
 class LibraryViewModel @Inject constructor(
 	private val repository: GameRepository,
-	private val savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 	private val _platform = MutableStateFlow("psn") // 默认加载 PSN 数据
 
@@ -50,13 +49,14 @@ class LibraryViewModel @Inject constructor(
 	}
 
 	@OptIn(ExperimentalCoroutinesApi::class)
-	val games: Flow<PagingData<GameEntity>> = combine(_platform, _sortOrder) { platform, sortOrder ->
-		// 创建一个 Pair 或自定义的 data class 来持有组合后的状态
-		Pair(platform, sortOrder)
-	}.flatMapLatest { (platform, sortOrder) ->
-		// 假设 repository.getGames 现在可以接收 platform 和 sortOrder
-		repository.getGames(platform, sortOrder)
-	}.cachedIn(viewModelScope)
+	val games: Flow<PagingData<GameEntity>> =
+		combine(_platform, _sortOrder) { platform, sortOrder ->
+			// 创建一个 Pair 或自定义的 data class 来持有组合后的状态
+			Pair(platform, sortOrder)
+		}.flatMapLatest { (platform, sortOrder) ->
+			// 假设 repository.getGames 现在可以接收 platform 和 sortOrder
+			repository.getGames(platform, sortOrder)
+		}.cachedIn(viewModelScope)
 
 	private val _isRefreshing = MutableStateFlow(false)
 	val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()

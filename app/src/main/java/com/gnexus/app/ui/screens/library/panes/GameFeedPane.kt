@@ -46,6 +46,7 @@ fun GameFeedPane(
 	onTrophyClick: (Int) -> Unit,
 	onGuideClick: (Int) -> Unit,
 	onPlatformChange: (PlatformDestination) -> Unit,
+	onPlatformClick: (PlatformDestination) -> Unit,
 	initialPage: Int = 0,
 	viewModel: LibraryViewModel = hiltViewModel(),
 	viewMode: ViewMode
@@ -115,12 +116,12 @@ fun GameFeedPane(
 			) { pageIndex ->
 				TabScreen(
 					games,
-					pagerState.currentPage,
+					pageIndex,
 					viewMode,
 					onGameClick,
 					onTrophyClick,
 					onGuideClick,
-					onPlatformChange,
+					onPlatformClick,
 				)
 			}
 		}

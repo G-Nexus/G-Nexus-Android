@@ -148,6 +148,15 @@ fun LibraryScreen(
 									}
 								}
 							},
+							onPlatformClick = { platformDestination ->
+								hasUserInteractedWithSupportingPane = true
+								scope.launch {
+									navigator.navigateTo(
+										SupportingPaneScaffoldRole.Supporting,
+										LibraryDestination.PlatformDetail(platformDestination)
+									)
+								}
+							},
 							viewMode = viewMode,
 						)
 					}

@@ -4,7 +4,6 @@ import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.gnexus.app.data.api.GameApiService
 import com.gnexus.app.data.db.AppDatabase
 import com.gnexus.app.data.db.GameEntity
 import com.gnexus.app.data.mediator.GameRemoteMediator
@@ -16,7 +15,7 @@ class GameRepository @Inject constructor(
     private val mediator: GameRemoteMediator,
     private val db: AppDatabase,
 ) {
-    fun getGames(): Flow<PagingData<GameEntity>> {
+    fun getGames(platform: String): Flow<PagingData<GameEntity>> {
         return Pager(
             config = PagingConfig(pageSize = 20),
             remoteMediator = mediator,

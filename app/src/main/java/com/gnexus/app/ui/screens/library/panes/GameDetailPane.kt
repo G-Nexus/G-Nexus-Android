@@ -11,26 +11,16 @@ import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.unit.dp
-import com.gnexus.app.ui.screens.library.components.PlatformTab
-import com.gnexus.app.ui.screens.library.components.PlatformTabBar
-import com.gnexus.app.ui.screens.library.components.StickyBlurHeader
 
 @SuppressLint("FrequentlyChangingValue")
 @Composable
 fun GameDetailPane(
 	heroProgress: Float = 0f
 ) {
-	var selectedPlatform by remember {
-		mutableStateOf(PlatformTab.PlayStation)
-	}
-	val listState = rememberLazyListState()
+	rememberLazyListState()
 	Column(
 		Modifier.background(
 			MaterialTheme.colorScheme.error
@@ -53,14 +43,5 @@ fun GameDetailPane(
 			"Game Detail",
 			modifier = Modifier.padding(16.dp)
 		)
-		StickyBlurHeader(
-			scroll = listState.firstVisibleItemScrollOffset,
-		) {
-
-			PlatformTabBar(
-				selected = selectedPlatform,
-				onSelected = { selectedPlatform = it }
-			)
-		}
 	}
 }

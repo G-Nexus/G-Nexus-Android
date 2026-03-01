@@ -1,5 +1,6 @@
 package com.gnexus.app.data.repository
 
+import android.util.Log
 import androidx.paging.ExperimentalPagingApi
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -17,6 +18,7 @@ class GameRepository @Inject constructor(
 	private val db: AppDatabase,
 ) {
 	fun getGames(platform: String, sortOrder: SortOrder): Flow<PagingData<GameEntity>> {
+		Log.d("GameRepository", "getGames called with platform: $platform")
 		return Pager(
 			config = PagingConfig(pageSize = 20),
 			remoteMediator = mediator,

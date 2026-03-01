@@ -25,20 +25,28 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import com.gnexus.app.ui.screens.library.components.LibraryTopAppBar
 import com.gnexus.app.ui.screens.library.navigation.LibraryDestination
-import com.gnexus.app.ui.screens.library.panes.Destination
+import com.gnexus.app.ui.screens.library.navigation.PlatformDestination
 import com.gnexus.app.ui.screens.library.panes.GameDetailPane
 import com.gnexus.app.ui.screens.library.panes.GameFeedPane
 import com.gnexus.app.ui.screens.library.panes.PlatformDetailPane
 import com.gnexus.app.ui.screens.library.panes.TrophyGroupsPane
 import kotlinx.coroutines.launch
 
+enum class ViewMode {
+	LIST,
+	GRID
+}
+
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
 	windowSizeClass: WindowSizeClass,
 ) {
+	val viewModel: LibraryViewModel = hiltViewModel()
+
 	val isCompact = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
 	val scope = rememberCoroutineScope()
 
@@ -59,13 +67,15 @@ fun LibraryScreen(
 
 	var hasUserInteractedWithSupportingPane by rememberSaveable { mutableStateOf(false) }
 
+	var viewMode by rememberSaveable { mutableStateOf(ViewMode.LIST) } // 默认是列表视图
+
 	// ---  在大屏模式下，为 supportingPane 设置一个默认内容 ---
 	//     这个 LaunchedEffect 只会在 LibraryScreen 首次组合时运行
 	LaunchedEffect(isCompact, navigator, hasUserInteractedWithSupportingPane) {
 		if (!isCompact && !navigator.canNavigateBack() && !hasUserInteractedWithSupportingPane) {
 			navigator.navigateTo(
 				SupportingPaneScaffoldRole.Supporting,
-				LibraryDestination.PlatformDetail(Destination.PSN) // 默认显示PSN平台详情
+				LibraryDestination.PlatformDetail(PlatformDestination.PSN) // 默认显示PSN平台详情
 			)
 		}
 	}
@@ -86,7 +96,16 @@ fun LibraryScreen(
 							checked = checked,
 							onCheckedChange = { checked = it },
 							checkedMenuItem = checkedMenuItem,
-							onMenuItemChange = { checkedMenuItem = it })
+							onMenuItemChange = {
+								checkedMenuItem = it
+								viewModel.onSortOrderChanged(it)
+							},
+							currentViewMode = viewMode,
+							onViewModeChange = {
+								viewMode =
+									if (viewMode == ViewMode.LIST) ViewMode.GRID else ViewMode.LIST
+							}
+						)
 					}
 				) { innerPadding ->
 					Box(modifier = Modifier.padding(innerPadding)) {
@@ -128,7 +147,8 @@ fun LibraryScreen(
 										)
 									}
 								}
-							}
+							},
+							viewMode = viewMode,
 						)
 					}
 				}

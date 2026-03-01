@@ -26,23 +26,14 @@ import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.gnexus.app.R
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
+import com.gnexus.app.ui.screens.library.LibraryViewModel
+import com.gnexus.app.ui.screens.library.ViewMode
 import com.gnexus.app.ui.screens.library.components.TabScreen
+import com.gnexus.app.ui.screens.library.navigation.PlatformDestination
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-
-enum class Destination(
-	val route: String,
-	val label: String,
-	val icon: Int,
-	val contentDescription: String
-) {
-	PSN("psn", "PSN", R.drawable.playstation, "PlayStation"),
-	STEAM("steam", "Steam", R.drawable.steam, "Steam"),
-	XBOX("xbox", "Xbox", R.drawable.xbox, "Xbox"),
-	NS("NS", "NS", R.drawable.nintendo_switch, "Nintendo Switch"),
-	EPIC("EPIC", "Epic", R.drawable.epicgames, "Epic Games")
-}
 
 @OptIn(
 	ExperimentalMaterial3Api::class, ExperimentalMaterial3ExpressiveApi::class,
@@ -54,18 +45,22 @@ fun GameFeedPane(
 	onGameClick: (Int) -> Unit,
 	onTrophyClick: (Int) -> Unit,
 	onGuideClick: (Int) -> Unit,
-	onPlatformChange: (Destination) -> Unit,
-	initialPage: Int = 0
+	onPlatformChange: (PlatformDestination) -> Unit,
+	initialPage: Int = 0,
+	viewModel: LibraryViewModel = hiltViewModel(),
+	viewMode: ViewMode
 ) {
-	val destinations = remember { Destination.entries }
+	val games = viewModel.games.collectAsLazyPagingItems()
+	val destinations = remember { PlatformDestination.entries }
 	val pagerState =
 		rememberPagerState(initialPage = initialPage, pageCount = { destinations.size })
-	rememberCoroutineScope()
 	val coroutineScope = rememberCoroutineScope()
 	// 监听 Pager 状态变化，并通过回调通知父组件
 	LaunchedEffect(pagerState) {
 		snapshotFlow { pagerState.currentPage }.collectLatest { page ->
-			onPlatformChange(destinations[page])
+			val newPlatform = destinations[page]
+			onPlatformChange(newPlatform)
+			viewModel.onPlatformChanged(newPlatform.route)
 		}
 	}
 
@@ -90,7 +85,7 @@ fun GameFeedPane(
 			PrimaryScrollableTabRow(
 				selectedTabIndex = pagerState.currentPage,
 			) {
-				Destination.entries.forEachIndexed { index, destination ->
+				PlatformDestination.entries.forEachIndexed { index, destination ->
 					Tab(
 						selected = pagerState.currentPage == index,
 						onClick = {
@@ -119,9 +114,13 @@ fun GameFeedPane(
 					.clipToBounds()
 			) { pageIndex ->
 				TabScreen(
+					games,
+					pagerState.currentPage,
+					viewMode,
 					onGameClick,
 					onTrophyClick,
 					onGuideClick,
+					onPlatformChange,
 				)
 			}
 		}

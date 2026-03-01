@@ -20,20 +20,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-
-//import com.valentinilk.shimmer.shimmer
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun GameLibrarySkeletonLoader() {
-	// 使用 shimmer 修饰符包裹整个列表
 	LazyColumn(
 		modifier = Modifier
-			.fillMaxSize(),
-//			.shimmer(), // 应用闪烁效果
+			.fillMaxSize()
+			.shimmer(),
 		contentPadding = PaddingValues(horizontal = 24.dp, vertical = 12.dp),
-		userScrollEnabled = false // 加载时禁止滚动
+		userScrollEnabled = false
 	) {
-		items(10) { // 显示10个占位项
+		items(10) {
 			SkeletonGameCard()
 		}
 	}

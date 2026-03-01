@@ -61,6 +61,7 @@ dependencies {
     implementation(libs.androidx.compose.material3)
     implementation(libs.androidx.material.icons.extended)
     implementation(libs.androidx.navigation.compose)
+    implementation(libs.valentinilk.shimmer.compose)
 
     // --- COMPOSE - ADAPTIVE & WINDOW SIZE ---
     implementation(libs.androidx.compose.material3.adaptive.navigation.suite)

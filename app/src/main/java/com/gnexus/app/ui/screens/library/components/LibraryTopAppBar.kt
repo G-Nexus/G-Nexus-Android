@@ -10,6 +10,7 @@ import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.automirrored.filled.ViewList
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AppBarWithSearch
@@ -45,6 +46,7 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.util.fastForEachIndexed
+import com.gnexus.app.ui.screens.library.ViewMode
 import kotlinx.coroutines.launch
 
 @OptIn(
@@ -57,7 +59,9 @@ fun LibraryTopAppBar(
 	checked: Boolean,
 	onCheckedChange: (Boolean) -> Unit,
 	checkedMenuItem: Int,
-	onMenuItemChange: (Int) -> Unit
+	onMenuItemChange: (Int) -> Unit,
+	currentViewMode: ViewMode,
+	onViewModeChange: () -> Unit
 ) {
 	val scope = rememberCoroutineScope()
 	val appBarWithSearchColors =
@@ -98,11 +102,19 @@ fun LibraryTopAppBar(
 		actions = {
 			SplitButtonLayout(
 				leadingButton = {
-					SplitButtonDefaults.LeadingButton(onClick = { /* Do Nothing */ }) {
+					SplitButtonDefaults.LeadingButton(onClick = onViewModeChange) {
+						val icon = when (currentViewMode) {
+							ViewMode.LIST -> Icons.AutoMirrored.Filled.ViewList
+							ViewMode.GRID -> Icons.Default.GridView
+						}
+						val contentDesc = when (currentViewMode) {
+							ViewMode.LIST -> "Switch to Grid View"
+							ViewMode.GRID -> "Switch to List View"
+						}
 						Icon(
-							Icons.AutoMirrored.Filled.ViewList,
+							icon,
 							modifier = Modifier.size(SplitButtonDefaults.LeadingIconSize),
-							contentDescription = "Localized description",
+							contentDescription = contentDesc,
 						)
 					}
 				},

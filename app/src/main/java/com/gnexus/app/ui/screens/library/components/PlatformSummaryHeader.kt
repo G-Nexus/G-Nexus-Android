@@ -30,7 +30,7 @@ fun PlatformSummaryHeader(
 	Surface(
 		modifier = Modifier
 			.fillMaxWidth()
-			.padding(horizontal = 24.dp, vertical = 8.dp)
+			.padding(start = 24.dp, top = 8.dp, end = 24.dp)
 			.clip(MaterialTheme.shapes.medium)
 			.clickable {
 				onPlatformClick(PlatformDestination.entries[pageIndex])

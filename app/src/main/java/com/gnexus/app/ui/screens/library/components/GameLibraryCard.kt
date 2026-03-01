@@ -80,7 +80,7 @@ fun GameLibraryCard(
                         model = game?.imageUrl,
                         contentDescription = null,
                         modifier = Modifier
-                            .width(120.dp)
+                            .width(100.dp)
                             .clip(RoundedCornerShape(16.dp))
                     )
 

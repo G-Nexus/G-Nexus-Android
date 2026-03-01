@@ -47,7 +47,7 @@ fun InfoBlock(
             Text(
                 value,
                 modifier = Modifier.padding(start = 6.dp),
-                style = MaterialTheme.typography.labelMedium
+                style = MaterialTheme.typography.labelMedium,
             )
         }
     }

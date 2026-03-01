@@ -5,7 +5,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -18,7 +17,6 @@ import androidx.compose.material.icons.automirrored.outlined.ArrowForwardIos
 import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -38,8 +36,8 @@ fun TrophyRow(
 	Row(
 		modifier = Modifier
 			.fillMaxWidth()
-			.height(59.dp)
-			.clip(RoundedCornerShape(20.dp))
+			.height(50.dp)
+			.clip(RoundedCornerShape(16.dp))
 			.background(
 				if (pressed)
 					MaterialTheme.colorScheme.surfaceContainerHigh
@@ -61,21 +59,15 @@ fun TrophyRow(
 			tint = MaterialTheme.colorScheme.primary
 		)
 		Spacer(Modifier.width(20.dp))
-		Column {
-			Text(
-				"奖杯",
-				style = MaterialTheme.typography.bodyMedium
-			)
-			Row(
-				modifier = Modifier
-					.padding(top = 6.dp, start = 10.dp, end = 10.dp),
-				horizontalArrangement = Arrangement.spacedBy(20.dp)
-			) {
-				TrophyIcon(TrophyType.Platinum, 0, highlight = true)
-				TrophyIcon(TrophyType.Gold, 2, highlight = true)
-				TrophyIcon(TrophyType.Silver, 10)
-				TrophyIcon(TrophyType.Bronze, 20)
-			}
+		Row(
+			modifier = Modifier
+				.padding(start = 10.dp),
+			horizontalArrangement = Arrangement.spacedBy(20.dp)
+		) {
+			TrophyIcon(TrophyType.Platinum, 0, highlight = true)
+			TrophyIcon(TrophyType.Gold, 2, highlight = true)
+			TrophyIcon(TrophyType.Silver, 10)
+			TrophyIcon(TrophyType.Bronze, 20)
 		}
 		Spacer(Modifier.weight(1f))
 		Icon(

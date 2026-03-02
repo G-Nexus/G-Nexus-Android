@@ -78,6 +78,7 @@ dependencies {
 
     // --- JSON PARSING (MOSHI) ---
     implementation(libs.bundles.moshi)
+    implementation(libs.androidx.ui.graphics)
     ksp(libs.squareup.moshi.kotlin.codegen)
 
     // --- lifecycle Viewmodel ---

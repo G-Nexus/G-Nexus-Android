@@ -3,7 +3,6 @@ package com.gnexus.app.ui.screens.library.components
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -33,8 +32,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.gnexus.app.R
 import com.gnexus.app.data.db.GameEntity
+import kotlin.time.Duration
 
 @Composable
 fun GameLibraryCard(
@@ -48,23 +47,23 @@ fun GameLibraryCard(
 
 	Box(
 		modifier = Modifier
-            .fillMaxWidth()
-            .padding(top = 8.dp)
+			.fillMaxWidth()
+			.padding(top = 8.dp)
 	) {
 
 		ElevatedCard(
 			modifier = Modifier
-                .fillMaxWidth()
-                .graphicsLayer {
-                    scaleX = if (pressed) 0.98f else 1f
-                    scaleY = if (pressed) 0.98f else 1f
-                }
-                .clickable(
-                    interactionSource = interactionSource,
-                    indication = null
-                ) {
-                    onGameClick(1)
-                },
+				.fillMaxWidth()
+				.graphicsLayer {
+					scaleX = if (pressed) 0.98f else 1f
+					scaleY = if (pressed) 0.98f else 1f
+				}
+				.clickable(
+					interactionSource = interactionSource,
+					indication = null
+				) {
+					onGameClick(1)
+				},
 			shape = RoundedCornerShape(24.dp),
 			colors = CardDefaults.cardColors(
 				containerColor = MaterialTheme.colorScheme.surfaceContainer
@@ -79,14 +78,14 @@ fun GameLibraryCard(
 						model = game?.imageUrl,
 						contentDescription = null,
 						modifier = Modifier
-                            .width(100.dp)
-                            .clip(RoundedCornerShape(16.dp))
+							.width(100.dp)
+							.clip(RoundedCornerShape(16.dp))
 					)
 
 					Column(
 						modifier = Modifier
-                            .padding(start = 12.dp)
-                            .weight(1f)
+							.padding(start = 12.dp)
+							.weight(1f)
 					) {
 						Text(
 							text = game?.name ?: game?.sortableName ?: game?.localizedName
@@ -99,17 +98,13 @@ fun GameLibraryCard(
 						Spacer(Modifier.height(12.dp))
 
 						Row(
-							modifier = Modifier.fillMaxSize(),
-							horizontalArrangement = Arrangement.SpaceAround
+							modifier = Modifier
+								.fillMaxSize()
+								.padding(start = 12.dp),
 						) {
 							InfoBlock(
-								title = "游戏进度",
-								value = "80%",
-								icon = R.drawable.progress_activity
-							)
-							InfoBlock(
 								title = "游戏时长",
-								value = game?.playDuration ?: 0.toString(),
+								value = Duration.parse(game?.playDuration.toString()),
 								iconVector = Icons.Outlined.AccessTime
 							)
 						}
@@ -125,8 +120,8 @@ fun GameLibraryCard(
 					LinearProgressIndicator(
 						progress = { 0.8f },
 						modifier = Modifier
-                            .fillMaxWidth()
-                            .height(6.dp),
+							.fillMaxWidth()
+							.height(6.dp),
 						color = MaterialTheme.colorScheme.primary,
 						trackColor = MaterialTheme.colorScheme.surfaceContainerHighest
 					)

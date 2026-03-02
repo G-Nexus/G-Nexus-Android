@@ -14,41 +14,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import kotlin.time.Duration
 
 @Composable
 fun InfoBlock(
-    title: String,
-    value: String,
-    icon: Int? = null,
-    iconVector: ImageVector? = null
+	title: String,
+	value: Duration,
+	icon: Int? = null,
+	iconVector: ImageVector? = null
 ) {
-    Column {
-        Text(
-            title,
-            style = MaterialTheme.typography.bodySmall,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-        Spacer(Modifier.height(4.dp))
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            icon?.let {
-                Icon(
-                    painterResource(it),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            iconVector?.let {
-                Icon(
-                    it,
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.onSurfaceVariant
-                )
-            }
-            Text(
-                value,
-                modifier = Modifier.padding(start = 6.dp),
-                style = MaterialTheme.typography.labelMedium,
-            )
-        }
-    }
+	Column {
+		Text(
+			title,
+			style = MaterialTheme.typography.bodySmall,
+			color = MaterialTheme.colorScheme.onSurfaceVariant
+		)
+		Spacer(Modifier.height(4.dp))
+		Row(verticalAlignment = Alignment.CenterVertically) {
+			icon?.let {
+				Icon(
+					painterResource(it),
+					contentDescription = null,
+					tint = MaterialTheme.colorScheme.onSurfaceVariant
+				)
+			}
+			iconVector?.let {
+				Icon(
+					it,
+					contentDescription = null,
+					tint = MaterialTheme.colorScheme.onSurfaceVariant
+				)
+			}
+			Text(
+				"$value",
+				modifier = Modifier.padding(start = 6.dp),
+				style = MaterialTheme.typography.labelMedium,
+			)
+		}
+	}
 }

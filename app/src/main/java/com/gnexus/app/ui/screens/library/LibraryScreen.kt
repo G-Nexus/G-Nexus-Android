@@ -1,6 +1,8 @@
 package com.gnexus.app.ui.screens.library
 
+import android.os.Build
 import androidx.activity.compose.BackHandler
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -18,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -37,6 +40,7 @@ import com.gnexus.app.ui.screens.library.panes.PlatformDetailPane
 import com.gnexus.app.ui.screens.library.panes.TrophyGroupsPane
 import kotlinx.coroutines.launch
 
+@RequiresApi(Build.VERSION_CODES.VANILLA_ICE_CREAM)
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
@@ -48,6 +52,9 @@ fun LibraryScreen(
 
 	val isCompact = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
 	val scope = rememberCoroutineScope()
+
+	val tabHistory = remember { mutableStateListOf<Int>() }
+
 	// --- Navigator 和 TopAppBar 的状态 ---
 	val navigator = rememberSupportingPaneScaffoldNavigator<LibraryDestination>(
 		scaffoldDirective = PaneScaffoldDirective(
@@ -81,9 +88,29 @@ fun LibraryScreen(
 		}
 	}
 
-	BackHandler(enabled = navigator.canNavigateBack()) {
-		scope.launch { navigator.navigateBack() }
+	val canNavigateBack = navigator.canNavigateBack() || tabHistory.size > 1
+
+	BackHandler(enabled = canNavigateBack) {
+		if (navigator.canNavigateBack()) {
+			scope.launch { navigator.navigateBack() }
+		} else if (tabHistory.size > 1) {
+			// 移除当前 Tab，取出上一个 Tab
+			tabHistory.removeLast()
+			val previousTab = PlatformDestination.entries[tabHistory.last()]
+			// 同步到 ViewModel，ViewModel 会驱动 Pager 滚动
+			viewModel.onPlatformChanged(previousTab)
+		}
 	}
+
+	LaunchedEffect(isCompact, navigator, hasUserInteractedWithSupportingPane) {
+		if (!isCompact && !navigator.canNavigateBack() && !hasUserInteractedWithSupportingPane) {
+			navigator.navigateTo(
+				SupportingPaneScaffoldRole.Supporting,
+				LibraryDestination.PlatformDetail(PlatformDestination.PSN)
+			)
+		}
+	}
+
 
 	SupportingPaneScaffold(
 		directive = navigator.scaffoldDirective,
@@ -137,18 +164,21 @@ fun LibraryScreen(
 									)
 								}
 							},
-							onPlatformChange = { platformDestination ->
-								// 如果是大屏，并且当前显示的不是游戏详情（即仍在显示平台详情），
-								// 则同步更新平台详情页。
+							onPlatformChange = { platform ->
+								if (tabHistory.lastOrNull() != platform.ordinal) {
+									tabHistory.add(platform.ordinal)
+								}
+								viewModel.onPlatformChanged(platform)
 								val currentContent = navigator.currentDestination?.contentKey
 								if (!isCompact && (!hasUserInteractedWithSupportingPane || currentContent is LibraryDestination.PlatformDetail?)) {
 									scope.launch {
 										navigator.navigateTo(
 											SupportingPaneScaffoldRole.Supporting,
-											LibraryDestination.PlatformDetail(platformDestination)
+											LibraryDestination.PlatformDetail(platform)
 										)
 									}
 								}
+
 							},
 							onPlatformClick = { platform ->
 								hasUserInteractedWithSupportingPane = true

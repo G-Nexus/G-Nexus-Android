@@ -106,22 +106,23 @@ fun TabScreen(
 		gridState.scrollToItem(0)
 	}
 	val headerHeight = 50.dp
-	Box(
+
+	PullToRefreshBox(
+		isRefreshing = isRefreshing,
+		onRefresh = onRefresh,
+		state = pullToRefreshState,
+		contentAlignment = Alignment.TopStart,
 		modifier = Modifier.fillMaxSize(),
+		indicator = {
+			PullToRefreshDefaults.Indicator(
+				state = pullToRefreshState,
+				isRefreshing = isRefreshing,
+				modifier = Modifier.align(Alignment.TopCenter)
+			)
+		}
 	) {
-		PullToRefreshBox(
-			isRefreshing = isRefreshing,
-			onRefresh = onRefresh,
-			state = pullToRefreshState,
-			contentAlignment = Alignment.TopStart,
+		Box(
 			modifier = Modifier.fillMaxSize(),
-			indicator = {
-				PullToRefreshDefaults.Indicator(
-					state = pullToRefreshState,
-					isRefreshing = isRefreshing,
-					modifier = Modifier.align(Alignment.TopCenter)
-				)
-			}
 		) {
 			val refreshLoadState = games.loadState.refresh
 
@@ -180,63 +181,66 @@ fun TabScreen(
 					}
 				}
 			}
-		}
-
-		AnimatedVisibility(
-			visible = headerVisible,
-			enter = expandVertically(animationSpec = tween(300)) + fadeIn(
-				animationSpec = tween(
-					200,
-					100
-				)
-			),
-			exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(animationSpec = tween(100)),
-			modifier = Modifier.align(Alignment.TopCenter)
-		) {
-			when (summaryState) {
-				is PlatformSummaryUiState.Loading -> {
-					Surface(color = MaterialTheme.colorScheme.background) {
-						PlatformSummarySkeleton()
+			AnimatedVisibility(
+				visible = headerVisible,
+				enter = expandVertically(animationSpec = tween(300)) + fadeIn(
+					animationSpec = tween(
+						200,
+						100
+					)
+				),
+				exit = shrinkVertically(animationSpec = tween(300)) + fadeOut(
+					animationSpec = tween(
+						100
+					)
+				),
+				modifier = Modifier.align(Alignment.TopCenter)
+			) {
+				when (summaryState) {
+					is PlatformSummaryUiState.Loading -> {
+						Surface(color = MaterialTheme.colorScheme.background) {
+							PlatformSummarySkeleton()
+						}
 					}
-				}
 
-				is PlatformSummaryUiState.Success -> PlatformSummaryHeader(
-					summaryState.summary,
-					games.itemCount,
-					onPlatformClick,
-					PlatformDestination.entries[pageIndex]
-				)
+					is PlatformSummaryUiState.Success -> PlatformSummaryHeader(
+						summaryState.summary,
+						games.itemCount,
+						onPlatformClick,
+						PlatformDestination.entries[pageIndex]
+					)
 
-				is PlatformSummaryUiState.Error -> {
-					Surface(color = MaterialTheme.colorScheme.background) {
-						PlatformSummarySkeleton()
+					is PlatformSummaryUiState.Error -> {
+						Surface(color = MaterialTheme.colorScheme.background) {
+							PlatformSummarySkeleton()
+						}
 					}
 				}
 			}
-		}
 
-		AnimatedVisibility(
-			visible = fabVisible,
-			modifier = Modifier
-				.align(Alignment.BottomEnd)
-				.padding(16.dp),
-			enter = slideInVertically(initialOffsetY = { it * 2 }),
-			exit = slideOutVertically(targetOffsetY = { it * 2 })
-		) {
-			FloatingActionButton(
-				onClick = {
-					coroutineScope.launch {
-						// 点击FAB时，平滑地滚动回顶部
-						when (viewMode) {
-							ViewMode.LIST -> listState.animateScrollToItem(0)
-							ViewMode.GRID -> gridState.animateScrollToItem(0)
-						}
-					}
-				},
-				containerColor = MaterialTheme.colorScheme.primaryContainer,
-				contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+			AnimatedVisibility(
+				visible = fabVisible,
+				modifier = Modifier
+					.align(Alignment.BottomEnd)
+					.padding(16.dp),
+				enter = slideInVertically(initialOffsetY = { it * 2 }),
+				exit = slideOutVertically(targetOffsetY = { it * 2 })
 			) {
-				Icon(Icons.Default.ArrowUpward, contentDescription = "Scroll to top")
+				FloatingActionButton(
+					onClick = {
+						coroutineScope.launch {
+							// 点击FAB时，平滑地滚动回顶部
+							when (viewMode) {
+								ViewMode.LIST -> listState.animateScrollToItem(0)
+								ViewMode.GRID -> gridState.animateScrollToItem(0)
+							}
+						}
+					},
+					containerColor = MaterialTheme.colorScheme.primaryContainer,
+					contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+				) {
+					Icon(Icons.Default.ArrowUpward, contentDescription = "Scroll to top")
+				}
 			}
 		}
 	}

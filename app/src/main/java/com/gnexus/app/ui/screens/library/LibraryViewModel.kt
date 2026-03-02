@@ -10,6 +10,7 @@ import com.gnexus.app.ui.screens.library.model.PlatformSummary
 import com.gnexus.app.ui.screens.library.navigation.PlatformDestination
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,7 +20,6 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import java.lang.Thread.sleep
 import java.util.concurrent.ConcurrentHashMap
 import javax.inject.Inject
 
@@ -103,10 +103,29 @@ class LibraryViewModel @Inject constructor(
 
 	fun onRefresh() {
 		viewModelScope.launch {
+			// 1. 开始刷新状态
 			_uiState.update { it.copy(isRefreshing = true) }
-			// 在这里可以调用一个 repository.forceRefresh() 方法
-			sleep(5000)
-			_uiState.update { it.copy(isRefreshing = false) }
+
+			try {
+				// 2. 触发 Paging 3 的数据刷新（可选，如果你的 Repository 支持）
+				// 如果你使用了 RemoteMediator，通常不需要在这里手动操作，
+				// 只需要在 UI 层调用 pagingItems.refresh()。
+				// 但如果你想在 ViewModel 层清理缓存，可以清空 gamesCache。
+//				gamesCache.clear()
+
+				// 3. 使用 delay 代替 sleep，模拟网络请求耗时
+				delay(2000)
+
+
+				// 4. 重新获取平台概要信息
+				fetchPlatformSummary(_uiState.value.currentPlatform.route)
+
+			} catch (e: Exception) {
+				// 处理异常
+			} finally {
+				// 5. 无论成功失败，最后关闭刷新动画
+				_uiState.update { it.copy(isRefreshing = false) }
+			}
 		}
 	}
 

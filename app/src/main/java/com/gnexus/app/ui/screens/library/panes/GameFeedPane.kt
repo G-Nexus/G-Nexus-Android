@@ -1,5 +1,6 @@
 package com.gnexus.app.ui.screens.library.panes
 
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -18,21 +19,21 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.snapshotFlow
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.paging.compose.collectAsLazyPagingItems
-import com.gnexus.app.ui.screens.library.LibraryViewModel
-import com.gnexus.app.ui.screens.library.ViewMode
+import androidx.paging.compose.LazyPagingItems
+import com.gnexus.app.data.db.GameEntity
+import com.gnexus.app.ui.screens.library.LibraryUiState
 import com.gnexus.app.ui.screens.library.components.TabScreen
 import com.gnexus.app.ui.screens.library.navigation.PlatformDestination
-import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 @OptIn(
@@ -41,30 +42,35 @@ import kotlinx.coroutines.launch
 )
 @Composable
 fun GameFeedPane(
+	uiState: LibraryUiState,
+	games: LazyPagingItems<GameEntity>,
 	windowSizeClass: WindowSizeClass,
-	onGameClick: (Int) -> Unit,
+	onGameClick: (String) -> Unit,
 	onTrophyClick: (Int) -> Unit,
 	onGuideClick: (Int) -> Unit,
 	onPlatformChange: (PlatformDestination) -> Unit,
 	onPlatformClick: (PlatformDestination) -> Unit,
+	onRefresh: () -> Unit,
 	initialPage: Int = 0,
-	viewModel: LibraryViewModel = hiltViewModel(),
-	viewMode: ViewMode
 ) {
-	val games = viewModel.games.collectAsLazyPagingItems()
 	val destinations = remember { PlatformDestination.entries }
 	val pagerState =
 		rememberPagerState(initialPage = initialPage, pageCount = { destinations.size })
 	val coroutineScope = rememberCoroutineScope()
-	// 监听 Pager 状态变化，并通过回调通知父组件
-	LaunchedEffect(pagerState) {
-		snapshotFlow { pagerState.currentPage }.collectLatest { page ->
-			val newPlatform = destinations[page]
-			onPlatformChange(newPlatform)
-			viewModel.onPlatformChanged(newPlatform.route)
-		}
+
+	// 监听 Pager 页面结算，同步给 ViewModel
+	LaunchedEffect(pagerState.settledPage) {
+		onPlatformChange(destinations[pagerState.settledPage])
 	}
 
+	// 监听 ViewModel 状态，反向同步给 Pager
+	LaunchedEffect(uiState.currentPlatform) {
+		val targetIndex = uiState.currentPlatform.ordinal
+		// 只有在 Pager 处于静止状态时才从外部强制同步，防止拉扯
+		if (!pagerState.isScrollInProgress && pagerState.currentPage != targetIndex) {
+			pagerState.animateScrollToPage(targetIndex)
+		}
+	}
 	Surface(
 		modifier = Modifier
 			.fillMaxSize(),
@@ -84,14 +90,24 @@ fun GameFeedPane(
 	) {
 		Column {
 			PrimaryScrollableTabRow(
-				selectedTabIndex = pagerState.currentPage,
+				selectedTabIndex = if (pagerState.isScrollInProgress) {
+					pagerState.targetPage
+				} else {
+					pagerState.currentPage
+				},
 			) {
-				PlatformDestination.entries.forEachIndexed { index, destination ->
+				destinations.forEachIndexed { index, destination ->
 					Tab(
 						selected = pagerState.currentPage == index,
 						onClick = {
-							coroutineScope.launch {
-								pagerState.animateScrollToPage(index)
+							if (pagerState.currentPage != index) {
+								// 只驱动 PagerState，让 PagerState 的 settledPage 自动去同步 ViewModel
+								coroutineScope.launch {
+									pagerState.animateScrollToPage(
+										page = index,
+										animationSpec = tween(durationMillis = 400)
+									)
+								}
 							}
 						},
 						icon = {
@@ -109,19 +125,23 @@ fun GameFeedPane(
 			}
 			HorizontalPager(
 				state = pagerState,
+				beyondViewportPageCount = 1,
 				modifier = Modifier
 					.fillMaxSize()
 					.weight(1f)
 					.clipToBounds()
 			) { pageIndex ->
 				TabScreen(
-					games,
-					pageIndex,
-					viewMode,
-					onGameClick,
-					onTrophyClick,
-					onGuideClick,
-					onPlatformClick,
+					games = games,
+					pageIndex = pageIndex,
+					viewMode = uiState.viewMode,
+					summaryState = uiState.platformSummaryState,
+					isRefreshing = uiState.isRefreshing,
+					onRefresh = onRefresh,
+					onGameClick = onGameClick,
+					onTrophyClick = onTrophyClick,
+					onGuideClick = onGuideClick,
+					onPlatformClick = onPlatformClick
 				)
 			}
 		}

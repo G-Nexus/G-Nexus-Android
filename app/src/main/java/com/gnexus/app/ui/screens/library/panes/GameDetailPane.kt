@@ -14,13 +14,21 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import com.gnexus.app.ui.screens.library.LibraryViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("FrequentlyChangingValue")
 @Composable
 fun GameDetailPane(
+	gameId: String,
+	viewModel: LibraryViewModel = hiltViewModel()
 ) {
+	val game by viewModel.getGameDetails(gameId).collectAsState(initial = null)
+
 	Scaffold(
 		topBar = {
 			CenterAlignedTopAppBar(
@@ -29,7 +37,7 @@ fun GameDetailPane(
 						Icon(Icons.AutoMirrored.Filled.ArrowBack, "Navigate back")
 					}
 				},
-				title = { Text("Game Detail") },
+				title = { Text(game?.localizedName ?: "") },
 				actions = {
 					IconButton(onClick = {}) {
 						Icon(

@@ -1,7 +1,6 @@
 package com.gnexus.app.ui.screens.library.components
 
 import android.graphics.Shader
-import android.os.Build
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -18,50 +17,54 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.asComposeRenderEffect
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.gnexus.app.ui.components.Avatar
+import com.gnexus.app.ui.screens.library.model.PlatformSummary
 import com.gnexus.app.ui.screens.library.navigation.PlatformDestination
 import android.graphics.RenderEffect as AndroidRenderEffect
 
+/**
+ * 显示平台概要信息的悬浮Header
+ *
+ * @param platform 从ViewModel获取的平台概要数据。
+ * @param gameCount 从Paging获取的当前列表的游戏总数。
+ * @param onPlatformClick 点击Header时触发的回调。
+ * @param platformDestination 当前Header代表的平台目标，用于点击回调。
+ */
 @Composable
 fun PlatformSummaryHeader(
-	pageIndex: Int,
+	platform: PlatformSummary,
+	gameCount: Int,
 	onPlatformClick: (PlatformDestination) -> Unit,
-	gameCount: Int
+	platformDestination: PlatformDestination,
 ) {
-	val blurModifier = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+	val blurModifier =
 		Modifier.graphicsLayer(
 			renderEffect = AndroidRenderEffect.createBlurEffect(
-				20f, // X轴模糊半径
-				20f, // Y轴模糊半径
+				20f,
+				20f,
 				Shader.TileMode.CLAMP
 			).asComposeRenderEffect()
 		)
-	} else {
-		Modifier // 在低版本上，返回一个空的Modifier，不应用任何效果
-	}
 	Box(
 		modifier = Modifier
 			.padding(start = 24.dp, top = 8.dp, end = 24.dp)
 			.clip(MaterialTheme.shapes.medium)
-			.clickable { onPlatformClick(PlatformDestination.entries[pageIndex]) },
+			.clickable { onPlatformClick(platformDestination) },
 	) {
 
 		Surface(
 			modifier = Modifier
-				.matchParentSize() // 让背景层的大小与Box完全一致
-				.then(blurModifier), // 将模糊效果应用在这一层
+				.matchParentSize()
+				.then(blurModifier),
 			shape = MaterialTheme.shapes.medium,
-			// 使用半透明颜色作为背景，在所有版本上都能提供“玻璃”质感
 			color = MaterialTheme.colorScheme.surfaceContainer.copy(alpha = 0.75f),
-			// (可选) 添加淡淡的边框来增强质感
 			border = BorderStroke(1.dp, MaterialTheme.colorScheme.onSurface.copy(alpha = 0.1f)),
-			content = {} // 这个 Surface 内部是空的
+			content = {}
 		)
 		Row(
 			modifier = Modifier
@@ -70,7 +73,7 @@ fun PlatformSummaryHeader(
 			verticalAlignment = Alignment.CenterVertically
 		) {
 			Avatar(
-				"https://psn-rsc.prod.dl.playstation.net/psn-rsc/avatar/HP9000/PPSA01971_00-DEATHSDCAVATAR11_4E1229519D7858373038_xl.png",
+				platform.avatarUrl,
 				Modifier.size(42.dp)
 			)
 			Column(
@@ -80,12 +83,11 @@ fun PlatformSummaryHeader(
 					verticalAlignment = Alignment.CenterVertically
 				) {
 					Text(
-						text = "FujiCat",
-						fontSize = MaterialTheme.typography.bodySmall.fontSize,
+						text = platform.userName,
+						style = MaterialTheme.typography.titleSmall,
 						modifier = Modifier
 							.padding(end = 8.dp)
 					)
-
 					Image(
 						painter = painterResource(PlatformDestination.PSN.gamePass as Int),
 						contentDescription = "Subscription Status",
@@ -93,8 +95,9 @@ fun PlatformSummaryHeader(
 					)
 				}
 				Text(
-					"jonas-lang-garfi",
-					fontSize = MaterialTheme.typography.bodySmall.fontSize
+					text = platform.onlineId,
+					style = MaterialTheme.typography.bodySmall,
+					color = MaterialTheme.colorScheme.onSurfaceVariant
 				)
 			}
 			Spacer(Modifier.weight(1f))
@@ -103,9 +106,9 @@ fun PlatformSummaryHeader(
 			) {
 				Text(
 					"$gameCount 款游戏",
-					fontSize = MaterialTheme.typography.bodySmall.fontSize
+					style = MaterialTheme.typography.bodySmall
 				)
-				Text("2000 个奖杯", fontSize = MaterialTheme.typography.bodySmall.fontSize)
+				Text("${platform.trophyCount} 个奖杯", style = MaterialTheme.typography.bodySmall)
 			}
 		}
 	}

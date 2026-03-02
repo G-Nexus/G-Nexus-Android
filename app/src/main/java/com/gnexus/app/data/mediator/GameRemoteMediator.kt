@@ -58,16 +58,10 @@ class GameRemoteMediator @Inject constructor(
             }
             MediatorResult.Success(endOfPaginationReached = games.isEmpty())
         } catch (e: IOException) {
-            Log.d("TEST", e.toString())
-
             MediatorResult.Error(e)
         } catch (e: HttpException) {
-            Log.d("TEST", e.toString())
-
             MediatorResult.Error(e)
         } catch (e: Exception) {
-            Log.d("TEST", e.toString())
-
             MediatorResult.Error(e)
         }
     }

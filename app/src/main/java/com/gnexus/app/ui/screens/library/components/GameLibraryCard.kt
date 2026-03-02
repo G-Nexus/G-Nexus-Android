@@ -38,7 +38,7 @@ import kotlin.time.Duration
 @Composable
 fun GameLibraryCard(
 	game: GameEntity?,
-	onGameClick: (Int) -> Unit,
+	onGameClick: (String) -> Unit,
 	onTrophyClick: (Int) -> Unit,
 	onGuideClick: (Int) -> Unit
 ) {
@@ -62,7 +62,7 @@ fun GameLibraryCard(
 					interactionSource = interactionSource,
 					indication = null
 				) {
-					onGameClick(1)
+					onGameClick(game?.titleId ?: "")
 				},
 			shape = RoundedCornerShape(24.dp),
 			colors = CardDefaults.cardColors(

@@ -5,7 +5,7 @@ import kotlinx.parcelize.Parcelize
 
 sealed class LibraryDestination : Parcelable {
 	@Parcelize
-	data class GameInfo(val game: Int) : LibraryDestination()
+	data class GameInfo(val titleId: String) : LibraryDestination()
 
 	@Parcelize
 	data class Trophy(val game: Int) : LibraryDestination()

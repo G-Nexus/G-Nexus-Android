@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Upsert
 import com.gnexus.app.ui.screens.library.SortOrder
+import kotlinx.coroutines.flow.Flow
 
 
 @Dao
@@ -39,5 +40,8 @@ interface GameDao {
 
 	@Query("DELETE FROM games")
 	suspend fun clearAll()
+
+	@Query("SELECT * FROM games WHERE titleId = :titleId") // 假设 titleId 是你的列名
+	fun getGameByTitleId(titleId: String): Flow<GameEntity?>
 }
 

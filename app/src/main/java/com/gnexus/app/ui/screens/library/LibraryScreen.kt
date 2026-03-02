@@ -16,8 +16,8 @@ import androidx.compose.material3.windowsizeclass.WindowSizeClass
 import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -26,7 +26,9 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.gnexus.app.ui.screens.library.components.LibraryTopAppBar
+import com.gnexus.app.ui.screens.library.components.SortOption
 import com.gnexus.app.ui.screens.library.navigation.LibraryDestination
 import com.gnexus.app.ui.screens.library.navigation.PlatformDestination
 import com.gnexus.app.ui.screens.library.panes.GameDetailPane
@@ -35,21 +37,17 @@ import com.gnexus.app.ui.screens.library.panes.PlatformDetailPane
 import com.gnexus.app.ui.screens.library.panes.TrophyGroupsPane
 import kotlinx.coroutines.launch
 
-enum class ViewMode {
-	LIST,
-	GRID
-}
-
 @OptIn(ExperimentalMaterial3AdaptiveApi::class, ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryScreen(
 	windowSizeClass: WindowSizeClass,
+	viewModel: LibraryViewModel = hiltViewModel(),
 ) {
-	val viewModel: LibraryViewModel = hiltViewModel()
+	val uiState by viewModel.uiState.collectAsState()
+	val games = viewModel.games.collectAsLazyPagingItems()
 
 	val isCompact = windowSizeClass.widthSizeClass == WindowWidthSizeClass.Compact
 	val scope = rememberCoroutineScope()
-
 	// --- Navigator 和 TopAppBar 的状态 ---
 	val navigator = rememberSupportingPaneScaffoldNavigator<LibraryDestination>(
 		scaffoldDirective = PaneScaffoldDirective(
@@ -61,14 +59,17 @@ fun LibraryScreen(
 			excludedBounds = emptyList()
 		)
 	)
-	val searchBarState = rememberContainedSearchBarState()
-	var checked by remember { mutableStateOf(false) }
-	var checkedMenuItem by remember { mutableIntStateOf(0) }
-
 	var hasUserInteractedWithSupportingPane by rememberSaveable { mutableStateOf(false) }
 
-	var viewMode by rememberSaveable { mutableStateOf(ViewMode.LIST) } // 默认是列表视图
-
+	val searchBarState = rememberContainedSearchBarState()
+	var sortMenuExpanded by remember { mutableStateOf(false) }
+	val sortOptions = remember {
+		listOf(
+			SortOption("最近游玩", SortOrder.RECENT),
+			SortOption("A-Z排序", SortOrder.A_TO_Z),
+			SortOption("Z-A排序", SortOrder.Z_TO_A)
+		)
+	}
 	// ---  在大屏模式下，为 supportingPane 设置一个默认内容 ---
 	//     这个 LaunchedEffect 只会在 LibraryScreen 首次组合时运行
 	LaunchedEffect(isCompact, navigator, hasUserInteractedWithSupportingPane) {
@@ -93,29 +94,30 @@ fun LibraryScreen(
 					topBar = {
 						LibraryTopAppBar(
 							searchBarState = searchBarState,
-							checked = checked,
-							onCheckedChange = { checked = it },
-							checkedMenuItem = checkedMenuItem,
-							onMenuItemChange = {
-								checkedMenuItem = it
-								viewModel.onSortOrderChanged(it)
+							sortMenuExpanded = sortMenuExpanded,
+							onSortMenuToggle = { sortMenuExpanded = it },
+
+							currentSortOrder = uiState.sortOrder,
+							sortOptions = sortOptions,
+							onSortOrderChange = { newSortOrder ->
+								viewModel.onSortOrderChanged(newSortOrder)
 							},
-							currentViewMode = viewMode,
-							onViewModeChange = {
-								viewMode =
-									if (viewMode == ViewMode.LIST) ViewMode.GRID else ViewMode.LIST
-							}
+							currentViewMode = uiState.viewMode,
+							onViewModeChange = { viewModel.onViewModeChanged() }
+
 						)
 					}
 				) { innerPadding ->
 					Box(modifier = Modifier.padding(innerPadding)) {
 						GameFeedPane(
+							uiState = uiState,
+							games = games,
 							windowSizeClass = windowSizeClass,
-							onGameClick = { game ->
+							onGameClick = { titleId ->
 								scope.launch {
 									navigator.navigateTo(
 										SupportingPaneScaffoldRole.Supporting,
-										LibraryDestination.GameInfo(game)
+										LibraryDestination.GameInfo(titleId)
 									)
 								}
 							},
@@ -148,16 +150,16 @@ fun LibraryScreen(
 									}
 								}
 							},
-							onPlatformClick = { platformDestination ->
+							onPlatformClick = { platform ->
 								hasUserInteractedWithSupportingPane = true
 								scope.launch {
 									navigator.navigateTo(
 										SupportingPaneScaffoldRole.Supporting,
-										LibraryDestination.PlatformDetail(platformDestination)
+										LibraryDestination.PlatformDetail(platform)
 									)
 								}
 							},
-							viewMode = viewMode,
+							onRefresh = viewModel::onRefresh
 						)
 					}
 				}
@@ -169,7 +171,7 @@ fun LibraryScreen(
 				if (displayDest != null) {
 					// --- 更新 when 语句以处理所有 Destination 类型 ---
 					when (displayDest) {
-						is LibraryDestination.GameInfo -> GameDetailPane()
+						is LibraryDestination.GameInfo -> GameDetailPane(displayDest.titleId)
 						is LibraryDestination.Trophy -> TrophyGroupsPane(displayDest.game)
 						is LibraryDestination.Guide -> TrophyGroupsPane(displayDest.game)
 						is LibraryDestination.PlatformDetail -> PlatformDetailPane(displayDest.platform)

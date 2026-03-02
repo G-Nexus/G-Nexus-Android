@@ -2,7 +2,6 @@ package com.gnexus.app.ui.screens.library.components
 
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.input.rememberTextFieldState
 import androidx.compose.material.icons.Icons
@@ -14,15 +13,12 @@ import androidx.compose.material.icons.filled.GridView
 import androidx.compose.material.icons.filled.KeyboardVoice
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AppBarWithSearch
-import androidx.compose.material3.DropdownMenuGroup
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.DropdownMenuPopup
 import androidx.compose.material3.ExpandedFullScreenContainedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExperimentalMaterial3ExpressiveApi
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.PlainTooltip
 import androidx.compose.material3.SearchBarDefaults
@@ -42,12 +38,17 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.util.fastForEachIndexed
+import com.gnexus.app.ui.screens.library.SortOrder
 import com.gnexus.app.ui.screens.library.ViewMode
 import kotlinx.coroutines.launch
+
+data class SortOption(
+	val label: String,
+	val sortOrder: SortOrder
+)
 
 @OptIn(
 	ExperimentalMaterial3Api::class,
@@ -56,10 +57,11 @@ import kotlinx.coroutines.launch
 @Composable
 fun LibraryTopAppBar(
 	searchBarState: SearchBarState,
-	checked: Boolean,
-	onCheckedChange: (Boolean) -> Unit,
-	checkedMenuItem: Int,
-	onMenuItemChange: (Int) -> Unit,
+	sortMenuExpanded: Boolean,
+	onSortMenuToggle: (Boolean) -> Unit,
+	currentSortOrder: SortOrder,
+	sortOptions: List<SortOption>,
+	onSortOrderChange: (SortOrder) -> Unit,
 	currentViewMode: ViewMode,
 	onViewModeChange: () -> Unit
 ) {
@@ -91,9 +93,9 @@ fun LibraryTopAppBar(
 				},
 			)
 		}
-	val groupLabels = listOf("排序选项")
-	val groupInteractionSource = remember { MutableInteractionSource() }
-	val groupItemLabels = listOf(listOf("最近游玩", "A-Z排序", "Z-A排序"))
+	listOf("排序选项")
+	remember { MutableInteractionSource() }
+	listOf(listOf("最近游玩", "A-Z排序", "Z-A排序"))
 
 	AppBarWithSearch(
 		state = searchBarState,
@@ -103,13 +105,9 @@ fun LibraryTopAppBar(
 			SplitButtonLayout(
 				leadingButton = {
 					SplitButtonDefaults.LeadingButton(onClick = onViewModeChange) {
-						val icon = when (currentViewMode) {
-							ViewMode.LIST -> Icons.AutoMirrored.Filled.ViewList
-							ViewMode.GRID -> Icons.Default.GridView
-						}
-						val contentDesc = when (currentViewMode) {
-							ViewMode.LIST -> "Switch to Grid View"
-							ViewMode.GRID -> "Switch to List View"
+						val (icon, contentDesc) = when (currentViewMode) {
+							ViewMode.LIST -> Icons.AutoMirrored.Filled.ViewList to "Switch to Grid View"
+							ViewMode.GRID -> Icons.Default.GridView to "Switch to List View"
 						}
 						Icon(
 							icon,
@@ -119,7 +117,6 @@ fun LibraryTopAppBar(
 					}
 				},
 				trailingButton = {
-					val description = ""
 					TooltipBox(
 						positionProvider =
 							TooltipDefaults.rememberTooltipPositionProvider(
@@ -129,18 +126,15 @@ fun LibraryTopAppBar(
 						state = rememberTooltipState(),
 					) {
 						SplitButtonDefaults.TrailingButton(
-							checked = checked,
-							onCheckedChange = { onCheckedChange(it) },
-							modifier =
-								Modifier.semantics {
-									stateDescription =
-										if (checked) "Expanded" else "Collapsed"
-									contentDescription = description
-								},
+							checked = sortMenuExpanded,
+							onCheckedChange = { onSortMenuToggle(it) },
+							modifier = Modifier.semantics {
+								stateDescription = if (sortMenuExpanded) "Expanded" else "Collapsed"
+							},
 						) {
 							val rotation: Float by
 							animateFloatAsState(
-								targetValue = if (checked) 180f else 0f,
+								targetValue = if (sortMenuExpanded) 180f else 0f,
 								label = "Trailing Icon Rotation",
 							)
 							Icon(
@@ -158,46 +152,29 @@ fun LibraryTopAppBar(
 				},
 			)
 			DropdownMenuPopup(
-				expanded = checked,
-				onDismissRequest = { onCheckedChange(false) },
+				expanded = sortMenuExpanded,
+				onDismissRequest = { onSortMenuToggle(false) },
 			) {
-				val groupCount = groupLabels.size
-				groupLabels.fastForEachIndexed { groupIndex, label ->
-					DropdownMenuGroup(
-						shapes = MenuDefaults.groupShape(groupIndex, groupCount),
-						interactionSource = groupInteractionSource
-					) {
-						MenuDefaults.Label {
-							Text(
-								label,
-								style = MaterialTheme.typography.bodySmall
+				sortOptions.fastForEachIndexed { index, sortOption ->
+					DropdownMenuItem(
+						text = { Text(sortOption.label) },
+						shapes = MenuDefaults.itemShape(index, sortOptions.size),
+						// 6. 检查和回调逻辑现在基于 SortOrder 对象，而不是 Int
+						checked = currentSortOrder == sortOption.sortOrder,
+						onCheckedChange = {
+							onSortOrderChange(sortOption.sortOrder)
+							onSortMenuToggle(false)
+						},
+						checkedLeadingIcon = {
+							Icon(
+								Icons.Filled.Check,
+								contentDescription = null,
 							)
-						}
-						HorizontalDivider(
-							modifier = Modifier.padding(MenuDefaults.HorizontalDividerPadding)
-						)
-						val groupItemCount = groupItemLabels[groupIndex].size
-						groupItemLabels[groupIndex].fastForEachIndexed { itemIndex, itemLabel ->
-							DropdownMenuItem(
-								text = { Text(itemLabel) },
-								shapes = MenuDefaults.itemShape(itemIndex, groupItemCount),
-								checked = checkedMenuItem == itemIndex,
-								onCheckedChange = {
-									onMenuItemChange(itemIndex)
-									onCheckedChange(false)
-								},
-								checkedLeadingIcon = {
-									Icon(
-										Icons.Filled.Check,
-										contentDescription = null,
-									)
-								},
-								trailingIcon = {
-									Icon(Icons.Filled.AccessTime, contentDescription = null)
-								},
-							)
-						}
-					}
+						},
+						trailingIcon = {
+							Icon(Icons.Filled.AccessTime, contentDescription = null)
+						},
+					)
 				}
 			}
 		},

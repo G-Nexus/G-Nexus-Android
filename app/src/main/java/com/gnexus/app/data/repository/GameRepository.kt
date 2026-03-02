@@ -20,9 +20,16 @@ class GameRepository @Inject constructor(
 	fun getGames(platform: String, sortOrder: SortOrder): Flow<PagingData<GameEntity>> {
 		Log.d("GameRepository", "getGames called with platform: $platform")
 		return Pager(
-			config = PagingConfig(pageSize = 20),
+			config = PagingConfig(
+				pageSize = 20,
+				enablePlaceholders = false
+			),
 			remoteMediator = mediator,
 			pagingSourceFactory = { db.gameDao.pagingSource(sortOrder) },
 		).flow
+	}
+
+	fun getGameByTitleId(titleId: String): Flow<GameEntity?> {
+		return db.gameDao.getGameByTitleId(titleId)
 	}
 }

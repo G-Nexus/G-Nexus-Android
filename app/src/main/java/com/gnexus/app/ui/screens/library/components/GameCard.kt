@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -29,15 +31,12 @@ import com.gnexus.app.data.db.GameEntity
 @Composable
 fun GameCard(
 	game: GameEntity?,
-	onGameClick: (Int) -> Unit,
+	onGameClick: (String) -> Unit,
 ) {
 	val interactionSource = remember { MutableInteractionSource() }
 	val pressed by interactionSource.collectIsPressedAsState()
 
 	ElevatedCard(
-		onClick = {
-			onGameClick(1)
-		},
 		modifier = Modifier
 			.fillMaxWidth()
 			.padding(8.dp)
@@ -50,7 +49,7 @@ fun GameCard(
 				interactionSource = interactionSource,
 				indication = null
 			) {
-				onGameClick(1)
+				onGameClick(game?.titleId ?: "")
 			},
 		shape = RoundedCornerShape(12.dp),
 		colors = CardDefaults.cardColors(
@@ -61,7 +60,10 @@ fun GameCard(
 			AsyncImage(
 				model = game?.imageUrl,
 				contentDescription = game?.name,
-				modifier = Modifier.fillMaxSize()
+				modifier = Modifier
+					.fillMaxSize()
+					.height(110.dp),
+				contentScale = ContentScale.Crop
 			)
 			Box(
 				modifier = Modifier
